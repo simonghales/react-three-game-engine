@@ -4,6 +4,7 @@ import R3FPhysicsObjectUpdater from './R3FPhysicsObjectUpdater';
 import { LogicWorker } from '../index';
 import CollisionsProvider from '../shared/CollisionsProvider';
 import { MappedComponents } from '../shared/types';
+import MeshRefs from "./MeshRefs";
 
 export const Physics: FC<{
   maxNumberOfPhysicsObjects?: number;
@@ -24,7 +25,9 @@ export const Physics: FC<{
               worker={logicWorker}
               logicMappedComponents={logicMappedComponents}
             >
-              {children}
+              <MeshRefs>
+                {children}
+              </MeshRefs>
             </LogicWorker>
           </R3FPhysicsObjectUpdater>
         </CollisionsProvider>
@@ -35,7 +38,11 @@ export const Physics: FC<{
   return (
     <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
       <CollisionsProvider>
-        <R3FPhysicsObjectUpdater>{children}</R3FPhysicsObjectUpdater>
+        <R3FPhysicsObjectUpdater>
+          <MeshRefs>
+            {children}
+          </MeshRefs>
+        </R3FPhysicsObjectUpdater>
       </CollisionsProvider>
     </PhysicsWorker>
   );

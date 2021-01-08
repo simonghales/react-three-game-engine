@@ -1,45 +1,42 @@
-import React from 'react';
-import {
-  Context as LogicWorkerAppContext,
-  ContextState as LogicWorkerAppContextState,
-} from './logicWorkerApp';
-import {
-  Context as PhysicsProviderContext,
-  ContextState as PhysicsProviderContextState,
-} from '../shared/PhysicsProvider';
-import {
-  Context as WorkerOnMessageProviderContext,
-  ContextState as WorkerOnMessageProviderContextState,
-} from '../shared/WorkerOnMessageProvider';
-import {
-  Context as MeshSubscriptionsContext,
-  ContextState as MeshSubscriptionsContextState,
-} from '../shared/MeshSubscriptions';
+import React, {createContext, useContext} from 'react';
+import {MessageData} from "../shared/types";
+import PhysicsHandler from "./logicWorkerApp/PhysicsHandler";
+import CollisionsProvider from "../shared/CollisionsProvider";
+import MeshRefs from "../main/MeshRefs";
+
+export type ContextState = {
+  physicsWorker: Worker | MessagePort;
+  sendMessageToMain: (message: MessageData) => void;
+};
+
+export const Context = createContext((null as unknown) as ContextState);
+
+export const useWorkerAppContext = (): ContextState => {
+  return useContext(Context);
+};
+
+export const useSendMessageToMain = () => {
+  return useWorkerAppContext().sendMessageToMain;
+};
 
 const ApiWrapper: React.FC<{
-  logicWorkerAppContext: LogicWorkerAppContextState;
-  physicsProviderContext: PhysicsProviderContextState;
-  workerOnMessageProviderContext: WorkerOnMessageProviderContextState;
-  meshSubscriptionsContext: MeshSubscriptionsContextState;
+  physicsWorker: Worker | MessagePort,
+  sendMessageToMain: (message: MessageData) => void,
 }> = ({
   children,
-  logicWorkerAppContext,
-  physicsProviderContext,
-  workerOnMessageProviderContext,
-  meshSubscriptionsContext,
+  physicsWorker,
+  sendMessageToMain
 }) => {
   return (
-    <LogicWorkerAppContext.Provider value={logicWorkerAppContext}>
-      <PhysicsProviderContext.Provider value={physicsProviderContext}>
-        <WorkerOnMessageProviderContext.Provider
-          value={workerOnMessageProviderContext}
-        >
-          <MeshSubscriptionsContext.Provider value={meshSubscriptionsContext}>
-            {children}
-          </MeshSubscriptionsContext.Provider>
-        </WorkerOnMessageProviderContext.Provider>
-      </PhysicsProviderContext.Provider>
-    </LogicWorkerAppContext.Provider>
+      <Context.Provider value={{ physicsWorker, sendMessageToMain }}>
+        <PhysicsHandler worker={physicsWorker}>
+          <CollisionsProvider>
+            <MeshRefs>
+              {children}
+            </MeshRefs>
+          </CollisionsProvider>
+        </PhysicsHandler>
+      </Context.Provider>
   );
 };
 

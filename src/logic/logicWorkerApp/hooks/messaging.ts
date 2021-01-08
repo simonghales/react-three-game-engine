@@ -1,10 +1,10 @@
-import { useSendMessageToMain } from '../index';
 import { useCallback } from 'react';
 import {
   MessageKeys,
   SyncComponentMessageInfo,
   SyncComponentMessageType,
 } from '../../../shared/types';
+import {useSendMessageToMain} from "../../ApiWrapper";
 
 export const useSendSyncComponentMessage = () => {
   const sendMessageRaw = useSendMessageToMain();
