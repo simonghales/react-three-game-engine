@@ -51,7 +51,7 @@ const PhysicsSync: FC<{
 
   const getPhysicsStepTimeRemainingRatio = useCallback(
     (previousTime: number) => {
-      const nextExpectedUpdate = lastUpdateRef.current + PHYSICS_UPDATE_RATE;
+      const nextExpectedUpdate = lastUpdateRef.current + PHYSICS_UPDATE_RATE + 1;
       const time = Date.now();
       let ratio = (time - previousTime) / (nextExpectedUpdate - previousTime);
       ratio = ratio > 1 ? 1 : ratio;
