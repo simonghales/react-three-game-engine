@@ -1,0 +1,61 @@
+{
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build-worker": "tsdx build --entry src/physics/worker/worker.ts --name worker --tsconfig src/physics/worker/tsconfig.json && rm -rf temp && mkdir temp && mv dist/* temp/",
+    "build-worker-final": "mkdir dist/worker && mv temp/* dist/worker && rm -rf temp",
+    "build": "npm run build-worker && tsdx build && npm run build-worker-final",
+    "local-build": "yalc publish --push",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "npm run build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16.13",
+    "react-dom": ">=16.13",
+    "react-three-fiber": ">=5.0",
+    "typescript": ">=3.9"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "r3",
+  "module": "dist/r3.esm.js",
+  "size-limit": [],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.9.1",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "husky": "^4.3.6",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "size-limit": "^4.9.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "planck-js": "^0.3.23",
+    "three": "^0.124.0"
+  }
+}
