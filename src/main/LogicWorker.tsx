@@ -4,8 +4,9 @@ import {
   WorkerMessageType,
   WorkerOwnerMessageType,
 } from './worker/shared/types';
-import { MessageData } from '../shared/types';
+import { MappedComponents, MessageData } from '../shared/types';
 import Messages, { useMessagesContext } from './Messages';
+import LogicHandler from './LogicHandler';
 
 const LogicWorker: React.FC<{
   worker: Worker;
@@ -39,10 +40,15 @@ const LogicWorker: React.FC<{
 
 const LogicWorkerWrapper: React.FC<{
   worker: Worker;
-}> = ({ worker, children }) => {
+  logicMappedComponents: MappedComponents;
+}> = ({ worker, children, logicMappedComponents }) => {
   return (
     <Messages>
-      <LogicWorker worker={worker}>{children}</LogicWorker>
+      <LogicWorker worker={worker}>
+        <LogicHandler mappedComponentTypes={logicMappedComponents}>
+          {children}
+        </LogicHandler>
+      </LogicWorker>
     </Messages>
   );
 };

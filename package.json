@@ -39,7 +39,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "r3",
+  "name": "react-three-game-engine",
   "module": "dist/r3.esm.js",
   "size-limit": [],
   "devDependencies": {

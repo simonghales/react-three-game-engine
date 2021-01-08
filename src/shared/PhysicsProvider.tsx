@@ -13,14 +13,14 @@ import {
 } from '../main/worker/planckjs/bodies';
 import { WorkerMessageType } from '../main/worker/shared/types';
 
-type ContextState = {
+export type ContextState = {
   workerAddBody: (props: AddBodyProps) => void;
   workerRemoveBody: (props: RemoveBodyProps) => void;
   workerSetBody: (props: SetBodyProps) => void;
   workerUpdateBody: (props: UpdateBodyProps) => void;
 };
 
-const Context = createContext((null as unknown) as ContextState);
+export const Context = createContext((null as unknown) as ContextState);
 
 export const usePhysicsProvider = (): ContextState => {
   return useContext(Context);

@@ -51,8 +51,9 @@ export const logicWorkerHandler = (selfWorker: Worker, app: FC) => {
         worker: selfWorker,
         state,
         workerRef,
+        app,
       },
-      createElement(app, null, null)
+      null
     )
   );
 };

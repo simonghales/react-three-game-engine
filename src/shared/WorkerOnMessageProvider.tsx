@@ -7,16 +7,14 @@ import React, {
   useState,
 } from 'react';
 
-type WorkerOnMessageContextState = {
+export type ContextState = {
   subscribe: (callback: (event: MessageEvent) => void) => () => void;
 };
 
-const WorkerOnMessageContext = createContext(
-  (null as unknown) as WorkerOnMessageContextState
-);
+export const Context = createContext((null as unknown) as ContextState);
 
 export const useWorkerOnMessage = () => {
-  return useContext(WorkerOnMessageContext).subscribe;
+  return useContext(Context).subscribe;
 };
 
 const WorkerOnMessageProvider: React.FC<{
@@ -50,13 +48,13 @@ const WorkerOnMessageProvider: React.FC<{
   }, [worker, subscriptionsRef]);
 
   return (
-    <WorkerOnMessageContext.Provider
+    <Context.Provider
       value={{
         subscribe,
       }}
     >
       {children}
-    </WorkerOnMessageContext.Provider>
+    </Context.Provider>
   );
 };
 

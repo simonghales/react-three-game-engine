@@ -5,14 +5,15 @@ import { MessageData } from '../../shared/types';
 import { WorkerOwnerMessageType } from '../../main/worker/shared/types';
 import CollisionsProvider from '../../shared/CollisionsProvider';
 import PhysicsHandler from './PhysicsHandler';
+import AppWrapper from './AppWrapper';
 
-type ContextState = {
+export type ContextState = {
   initiated: boolean;
   physicsWorker: null | Worker | MessagePort;
   sendMessageToMain: (message: MessageData) => void;
 };
 
-const Context = createContext((null as unknown) as ContextState);
+export const Context = createContext((null as unknown) as ContextState);
 
 export const useWorkerAppContext = (): ContextState => {
   return useContext(Context);
@@ -20,6 +21,12 @@ export const useWorkerAppContext = (): ContextState => {
 
 export const useSendMessageToMain = () => {
   return useWorkerAppContext().sendMessageToMain;
+};
+
+const Test: FC = () => {
+  const context = useWorkerAppContext();
+  console.log('context?', context);
+  return null;
 };
 
 const WorkerApp: FC<{
@@ -31,7 +38,8 @@ const WorkerApp: FC<{
     physicsWorkerLoaded: boolean;
     initiated: boolean;
   };
-}> = ({ children, worker, state, workerRef }) => {
+  app: any;
+}> = ({ app, children, worker, state, workerRef }) => {
   const proxyState = useProxy(state);
   const initiated = proxyState.initiated;
   const physicsWorkerLoaded = proxyState.physicsWorkerLoaded;
@@ -65,8 +73,11 @@ const WorkerApp: FC<{
   return (
     <Context.Provider value={{ initiated, physicsWorker, sendMessageToMain }}>
       <PhysicsHandler worker={physicsWorker}>
-        <CollisionsProvider>{children}</CollisionsProvider>
+        <CollisionsProvider>
+          <AppWrapper app={app} />
+        </CollisionsProvider>
       </PhysicsHandler>
+      <Test />
     </Context.Provider>
   );
 };

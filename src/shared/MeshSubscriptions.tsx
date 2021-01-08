@@ -12,7 +12,7 @@ import { getPositionAndAngle } from './utils';
 import { useStoredData } from './StoredPhysicsData';
 import { lerp } from '../utils/numbers';
 
-type ContextState = {
+export type ContextState = {
   lerpMeshes: (
     getPhysicsStepTimeRemainingRatio: (time: number) => number
   ) => void;
@@ -28,7 +28,7 @@ type ContextState = {
   ) => () => void;
 };
 
-const Context = createContext((null as unknown) as ContextState);
+export const Context = createContext((null as unknown) as ContextState);
 
 export const useLerpMeshes = () => {
   return useContext(Context).lerpMeshes;

@@ -33,3 +33,7 @@ export type SyncComponentMessage = {
   info: SyncComponentMessageInfo;
   messageType: SyncComponentMessageType;
 };
+
+export type MappedComponents = {
+  [key: string]: any;
+};
