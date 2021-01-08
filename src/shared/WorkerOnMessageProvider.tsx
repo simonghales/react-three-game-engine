@@ -1,56 +1,63 @@
-import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from "react"
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 type WorkerOnMessageContextState = {
-    subscribe: (callback: (event: MessageEvent) => void) => () => void,
-}
+  subscribe: (callback: (event: MessageEvent) => void) => () => void;
+};
 
-const WorkerOnMessageContext = createContext(null as unknown as WorkerOnMessageContextState)
+const WorkerOnMessageContext = createContext(
+  (null as unknown) as WorkerOnMessageContextState
+);
 
 export const useWorkerOnMessage = () => {
-    return useContext(WorkerOnMessageContext).subscribe
-}
+  return useContext(WorkerOnMessageContext).subscribe;
+};
 
 const WorkerOnMessageProvider: React.FC<{
-    worker: Worker | MessagePort
-}> = ({children, worker}) => {
+  worker: Worker | MessagePort;
+}> = ({ children, worker }) => {
+  const idCount = useRef(0);
+  const subscriptionsRef = useRef<{
+    [key: string]: (event: MessageEvent) => void;
+  }>({});
 
-    const idCount = useRef(0)
-    const subscriptionsRef = useRef<{
-        [key: string]: (event: MessageEvent) => void,
-    }>({})
+  const subscribe = useCallback(
+    (callback: (event: MessageEvent) => void) => {
+      const id = idCount.current;
+      idCount.current += 1;
 
-    const subscribe = useCallback((callback: (event: MessageEvent) => void) => {
+      subscriptionsRef.current[id] = callback;
 
-        const id = idCount.current
-        idCount.current += 1
+      return () => {
+        delete subscriptionsRef.current[id];
+      };
+    },
+    [subscriptionsRef]
+  );
 
-        subscriptionsRef.current[id] = callback
+  useEffect(() => {
+    worker.onmessage = (event: MessageEvent) => {
+      Object.values(subscriptionsRef.current).forEach(callback => {
+        callback(event);
+      });
+    };
+  }, [worker, subscriptionsRef]);
 
-        return () => {
-            delete subscriptionsRef.current[id]
-        }
+  return (
+    <WorkerOnMessageContext.Provider
+      value={{
+        subscribe,
+      }}
+    >
+      {children}
+    </WorkerOnMessageContext.Provider>
+  );
+};
 
-    }, [subscriptionsRef])
-
-    useEffect(() => {
-
-        worker.onmessage = (event: MessageEvent) => {
-
-            Object.values(subscriptionsRef.current).forEach((callback) => {
-                callback(event)
-            })
-
-        }
-
-    }, [worker, subscriptionsRef])
-
-    return (
-        <WorkerOnMessageContext.Provider value={{
-            subscribe,
-        }}>
-            {children}
-        </WorkerOnMessageContext.Provider>
-    )
-}
-
-export default WorkerOnMessageProvider
+export default WorkerOnMessageProvider;
