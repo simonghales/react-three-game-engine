@@ -40,7 +40,7 @@
     "trailingComma": "es5"
   },
   "name": "react-three-game-engine",
-  "module": "dist/r3.esm.js",
+  "module": "dist/react-three-game-engine.esm.js",
   "size-limit": [],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.1",
