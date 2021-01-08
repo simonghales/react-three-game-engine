@@ -18,32 +18,32 @@ export const Physics: FC<{
 }) => {
   if (logicWorker) {
     return (
-      <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
-        <CollisionsProvider>
-          <R3FPhysicsObjectUpdater>
-            <LogicWorker
-              worker={logicWorker}
-              logicMappedComponents={logicMappedComponents}
-            >
-              <MeshRefs>
-                {children}
-              </MeshRefs>
-            </LogicWorker>
-          </R3FPhysicsObjectUpdater>
-        </CollisionsProvider>
-      </PhysicsWorker>
+      <MeshRefs>
+        <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
+          <CollisionsProvider>
+            <R3FPhysicsObjectUpdater>
+              <LogicWorker
+                worker={logicWorker}
+                logicMappedComponents={logicMappedComponents}
+              >
+                  {children}
+              </LogicWorker>
+            </R3FPhysicsObjectUpdater>
+          </CollisionsProvider>
+        </PhysicsWorker>
+      </MeshRefs>
     );
   }
 
   return (
-    <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
-      <CollisionsProvider>
-        <R3FPhysicsObjectUpdater>
-          <MeshRefs>
-            {children}
-          </MeshRefs>
-        </R3FPhysicsObjectUpdater>
-      </CollisionsProvider>
-    </PhysicsWorker>
+    <MeshRefs>
+      <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
+        <CollisionsProvider>
+          <R3FPhysicsObjectUpdater>
+              {children}
+          </R3FPhysicsObjectUpdater>
+        </CollisionsProvider>
+      </PhysicsWorker>
+    </MeshRefs>
   );
 };

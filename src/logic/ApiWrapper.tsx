@@ -29,13 +29,13 @@ const ApiWrapper: React.FC<{
 }) => {
   return (
       <Context.Provider value={{ physicsWorker, sendMessageToMain }}>
-        <PhysicsHandler worker={physicsWorker}>
-          <CollisionsProvider>
-            <MeshRefs>
-              {children}
-            </MeshRefs>
-          </CollisionsProvider>
-        </PhysicsHandler>
+        <MeshRefs>
+          <PhysicsHandler worker={physicsWorker}>
+            <CollisionsProvider>
+                {children}
+            </CollisionsProvider>
+          </PhysicsHandler>
+        </MeshRefs>
       </Context.Provider>
   );
 };
