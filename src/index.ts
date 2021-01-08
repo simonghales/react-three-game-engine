@@ -10,6 +10,7 @@ import {
   useSubscribeMesh,
 } from './shared/MeshSubscriptions';
 import { BodyShape, BodyType } from './main/worker/planckjs/bodies';
+import {useStoredMesh, useStoreMesh } from './main/MeshRefs';
 
 export {
   Physics,
@@ -25,5 +26,7 @@ export {
   useSubscribeMesh,
   withLogicWrapper,
   BodyShape,
-  BodyType
+  BodyType,
+  useStoreMesh,
+  useStoredMesh
 };
