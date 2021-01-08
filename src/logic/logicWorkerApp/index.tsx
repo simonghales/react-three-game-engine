@@ -23,12 +23,6 @@ export const useSendMessageToMain = () => {
   return useWorkerAppContext().sendMessageToMain;
 };
 
-const Test: FC = () => {
-  const context = useWorkerAppContext();
-  console.log('context?', context);
-  return null;
-};
-
 const WorkerApp: FC<{
   worker: Worker;
   workerRef: {
@@ -77,7 +71,6 @@ const WorkerApp: FC<{
           <AppWrapper app={app} />
         </CollisionsProvider>
       </PhysicsHandler>
-      <Test />
     </Context.Provider>
   );
 };
