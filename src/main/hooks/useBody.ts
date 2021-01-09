@@ -78,22 +78,25 @@ export const useBodyApi = (passedUuid: ValidUUID): BodyApi => {
   return api;
 };
 
+type BodyParams = {
+  listenForCollisions?: boolean;
+  applyAngle?: boolean;
+  cacheKey?: PhysicsCacheKeys;
+  uuid?: ValidUUID;
+  fwdRef?: MutableRefObject<Object3D>;
+}
+
 export const useBody = (
   propsFn: () => AddBodyDef,
-  {
+  bodyParams: BodyParams = {}
+): [MutableRefObject<Object3D>, BodyApi, ValidUUID] => {
+  const {
     applyAngle = false,
-    cacheKey,
-    uuid: passedUUID,
-    fwdRef,
-    listenForCollisions = false,
-  }: {
-    listenForCollisions?: boolean;
-    applyAngle?: boolean;
-    cacheKey?: PhysicsCacheKeys;
-    uuid?: ValidUUID;
-    fwdRef?: MutableRefObject<Object3D>;
-  }
-): [any, BodyApi, ValidUUID] => {
+        cacheKey,
+        uuid: passedUUID,
+      fwdRef,
+      listenForCollisions = false,
+  } = bodyParams
   const localRef = useRef<Object3D>((null as unknown) as Object3D);
   const ref = fwdRef ? fwdRef : localRef;
   const [uuid] = useState(() => {

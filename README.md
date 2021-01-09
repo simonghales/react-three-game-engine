@@ -13,9 +13,9 @@ A very early experimental work-in-progress package to help provide game engine f
 
 ### Note
 The planck.js integration currently isn't fully fleshed out. I've only been adding in support 
-for functionality on a as-needed basis for my own games.
+for functionality on an as-needed basis for my own games.
 
-Also if you delve into the source code for this package, it's a bit messy!
+Note: if you delve into the source code for this package, it's a bit messy!
 
 ## Get Started
 
@@ -63,7 +63,7 @@ const [ref, api] = useBody(() => ({
             density: 20,
         }
     }],
-}), {})
+}))
 ```
 
 4. Control the body via the returned api
@@ -160,4 +160,48 @@ You should now have your Logic App running within React within your web worker,
 synchronised with the physics worker as well. 
 
 ### Controlling a body through both the main, and logic apps.
+
+To control a body via either the main or logic apps, you would create the body 
+within one app via `useBody` and then within the other app you can get api 
+access via `useBodyApi`.
+
+However you need to know the `uuid` of the body you wish to control. By default 
+the uuid is one generated via threejs, but you can specify one yourself.
+
+1.
+
+Create body
+
+```jsx
+useBody(() => ({
+    type: BodyType.dynamic,
+    position: Vec2(0, 0),
+    linearDamping: 4,
+    fixtures: [{
+        shape: BodyShape.circle,
+        radius: 0.55,
+        fixtureOptions: {
+            density: 20,
+        }
+    }],
+}), {
+    uuid: 'player'
+})
+```
+
+2.
+
+Get body api
+
+```jsx
+const api = useBodyApi('player')
+
+// ...
+
+api.setLinearVelocity(Vec2(1, 1))
+
+```
+
+So with this approach, you can for example initiate your player body via the logic app, 
+and then get api access via the main app, and use that to move the body around.
 

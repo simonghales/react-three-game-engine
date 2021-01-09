@@ -6,7 +6,7 @@ import CollisionsProvider from '../shared/CollisionsProvider';
 import { MappedComponents } from '../shared/types';
 import MeshRefs from "./MeshRefs";
 
-export const Physics: FC<{
+export const Engine: FC<{
   maxNumberOfPhysicsObjects?: number;
   logicWorker?: Worker;
   logicMappedComponents?: MappedComponents;
