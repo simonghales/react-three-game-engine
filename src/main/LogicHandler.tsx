@@ -41,11 +41,16 @@ const LogicHandler: React.FC<{
             break;
           case SyncComponentMessageType.UPDATE:
             setComponents(state => {
+              const previousData = state[info.componentKey]
+              const previousProps = previousData && previousData.props ? previousData.props : {}
               return {
                 ...state,
                 [info.componentKey]: {
                   componentType: info.componentType,
-                  props,
+                  props: {
+                    ...previousProps,
+                    ...props,
+                  },
                 },
               };
             });

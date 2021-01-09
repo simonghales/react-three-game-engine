@@ -226,3 +226,48 @@ return (
 )
 
 ```
+
+### Synchronising Logic App with Main App
+
+I've added in `useSyncWithMainComponent` to sync from the logic app to the main app
+
+1.
+
+Within a component running on the logic app
+
+```jsx
+const updateProps = useSyncWithMainComponent("player", "uniqueKey", {
+    foo: "bar"
+})
+
+// ...
+
+updateProps({
+    foo: "updated"
+})
+
+
+```
+
+2.
+
+Then within the main app
+
+```jsx
+const Player = ({foo}) => {
+    // foo -> "bar"
+    // foo -> "updated"
+}
+
+const mappedComponents = {
+    "player": Player
+}
+
+<Engine logicWorker={logicWorker} logicMappedComponents={mappedComponents}>
+    {/* ... */}
+</Engine>
+
+```
+
+When `useSyncWithMainComponent` is mounted / unmounted, the `<Player/>` 
+component will mount / unmount
