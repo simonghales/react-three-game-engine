@@ -27,7 +27,7 @@ const PhysicsWorker: FC<{
 }> = ({ children, maxNumberOfPhysicsObjects }) => {
   // @ts-ignore
   const [worker] = useState<Worker>(
-    () => new Worker('./worker/index', { type: 'module' })
+    () => new Worker('./worker/index.js', { type: 'module' })
   );
 
   useEffect(() => {
