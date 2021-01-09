@@ -7,6 +7,11 @@
     "dist",
     "src"
   ],
+  "homepage": "https://github.com/simonghales/react-three-game-engine#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonghales/react-three-game-engine.git"
+  },
   "engines": {
     "node": ">=10"
   },

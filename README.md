@@ -122,7 +122,7 @@ const App = () => {
 export const LgApp = withLogicWrapper(App)
 ```
 
-1.
+2.
 
 Set up your web worker like such 
 (note requiring the file was due to jsx issues with my web worker compiler)
@@ -138,7 +138,7 @@ import {logicWorkerHandler} from "react-three-game-engine";
 logicWorkerHandler(self, require("../path/to/logic/app/component").LgApp)
 ```
 
-1.
+3.
 
 Import your web worker (this is just example code)
 
@@ -146,7 +146,7 @@ Import your web worker (this is just example code)
 const [logicWorker] = useState(() => new Worker('../path/to/worker', { type: 'module' }))
 ```
 
-1.
+4.
 
 Pass worker to `<Engine/>`
 
@@ -205,3 +205,24 @@ api.setLinearVelocity(Vec2(1, 1))
 So with this approach, you can for example initiate your player body via the logic app, 
 and then get api access via the main app, and use that to move the body around.
 
+3.
+
+Additionally, if you are creating your body in main / logic, you'll likely want to have 
+access to the position / rotation of the body as well.
+
+You can use `useSubscribeMesh` and pass in a ref you've created, which will synchronize 
+with the physics body.
+
+```jsx
+const ref = useRef<Object3D>(new Object3D())
+useSubscribeMesh('player', ref.current, false)
+
+// ...
+
+return (
+    <group ref={ref}>
+        {/*...*/}
+    </group>
+)
+
+```
