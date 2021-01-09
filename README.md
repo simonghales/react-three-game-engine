@@ -107,9 +107,7 @@ To utilise this functionality you'll need to create your own web worker. You can
 check out my repo [react-three-game-starter](https://github.com/simonghales/react-three-game-starter) 
 for an example of how you can do so with `create-react-app` without having to eject.
 
-1.
-
-Create a React component to host your logic React app, export a new component wrapped with 
+1. Create a React component to host your logic React app, export a new component wrapped with 
 `withLogicWrapper`
 
 ```jsx
@@ -122,9 +120,7 @@ const App = () => {
 export const LgApp = withLogicWrapper(App)
 ```
 
-2.
-
-Set up your web worker like such 
+2. Set up your web worker like such 
 (note requiring the file was due to jsx issues with my web worker compiler)
 
 ```jsx
@@ -138,17 +134,13 @@ import {logicWorkerHandler} from "react-three-game-engine";
 logicWorkerHandler(self, require("../path/to/logic/app/component").LgApp)
 ```
 
-3.
-
-Import your web worker (this is just example code)
+3. Import your web worker (this is just example code)
 
 ```jsx
 const [logicWorker] = useState(() => new Worker('../path/to/worker', { type: 'module' }))
 ```
 
-4.
-
-Pass worker to `<Engine/>`
+4. Pass worker to `<Engine/>`
 
 ```jsx
 <Engine logicWorker={logicWorker}>
@@ -168,9 +160,7 @@ access via `useBodyApi`.
 However you need to know the `uuid` of the body you wish to control. By default 
 the uuid is one generated via threejs, but you can specify one yourself.
 
-1.
-
-Create body
+1. Create body
 
 ```jsx
 useBody(() => ({
@@ -189,9 +179,7 @@ useBody(() => ({
 })
 ```
 
-2.
-
-Get body api
+2. Get body api
 
 ```jsx
 const api = useBodyApi('player')
@@ -205,9 +193,7 @@ api.setLinearVelocity(Vec2(1, 1))
 So with this approach, you can for example initiate your player body via the logic app, 
 and then get api access via the main app, and use that to move the body around.
 
-3.
-
-Additionally, if you are creating your body in main / logic, you'll likely want to have 
+3. Additionally, if you are creating your body in main / logic, you'll likely want to have 
 access to the position / rotation of the body as well.
 
 You can use `useSubscribeMesh` and pass in a ref you've created, which will synchronize 
@@ -231,9 +217,7 @@ return (
 
 I've added in `useSyncWithMainComponent` to sync from the logic app to the main app
 
-1.
-
-Within a component running on the logic app
+1. Within a component running on the logic app
 
 ```jsx
 const updateProps = useSyncWithMainComponent("player", "uniqueKey", {
@@ -249,9 +233,7 @@ updateProps({
 
 ```
 
-2.
-
-Then within the main app
+2. Then within the main app
 
 ```jsx
 const Player = ({foo}) => {
@@ -271,3 +253,34 @@ const mappedComponents = {
 
 When `useSyncWithMainComponent` is mounted / unmounted, the `<Player/>` 
 component will mount / unmount
+
+### Communication 
+
+To communicate between the main and logic workers you can use `useSendMessage` 
+to send and `useOnMessage` to subscribe
+
+```jsx
+import {useSendMessage} from "react-three-game-engine"
+
+// ...
+
+useSendMessage('messageKey', "any-data")
+
+```
+
+```jsx
+import {useOnMessage} from "react-three-game-engine"
+
+// ...
+
+useOnMessage('messageKey', (data) => {
+    // data -> "any-data"
+})
+
+```
+
+## API
+
+[Read the API documentation](API.md)
+
+
