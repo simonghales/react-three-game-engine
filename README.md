@@ -11,6 +11,8 @@ A very early experimental work-in-progress package to help provide game engine f
 - `OnFixedUpdate` functionality
 - Additional React app running in web worker, sync'd with physics, for handling game logic etc
 
+I will be working on an example starter-kit: [react-three-game-starter](https://github.com/simonghales/react-three-game-starter) which will be fleshed out over time.
+
 ### Note
 The planck.js integration currently isn't fully fleshed out. I've only been adding in support 
 for functionality on an as-needed basis for my own games.
