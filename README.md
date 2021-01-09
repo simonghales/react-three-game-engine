@@ -267,7 +267,11 @@ import {useSendMessage} from "react-three-game-engine"
 
 // ...
 
-useSendMessage('messageKey', "any-data")
+const sendMessage = useSendMessage()
+
+// ...
+
+sendMessage('messageKey', "any-data")
 
 ```
 
@@ -276,9 +280,17 @@ import {useOnMessage} from "react-three-game-engine"
 
 // ...
 
-useOnMessage('messageKey', (data) => {
-    // data -> "any-data"
+const onMessage = useOnMessage()
+
+// ...
+
+const unsubscribe = onMessage('messageKey', (data) => {
+  // data -> "any-data"
 })
+
+// ...
+
+unsubscribe()
 
 ```
 
