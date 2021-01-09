@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { MessageData } from '../shared/types';
+import { MessageData } from './types';
 
 type MessagesContextState = {
   handleMessage: (message: MessageData) => void;
@@ -23,7 +23,7 @@ export const useMessagesContext = () => {
   return useContext(MessagesContext);
 };
 
-export const useSubscribeToMessage = () => {
+export const useOnMessage = () => {
   return useMessagesContext().subscribeToMessage;
 };
 

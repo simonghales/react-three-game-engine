@@ -11,6 +11,8 @@ import {
 } from './shared/MeshSubscriptions';
 import { BodyShape, BodyType } from './main/worker/planckjs/bodies';
 import {useStoredMesh, useStoreMesh } from './main/MeshRefs';
+import { useOnMessage } from './shared/Messages';
+import { useSendMessage } from './shared/SendMessages';
 
 export {
   Engine,
@@ -28,5 +30,7 @@ export {
   BodyShape,
   BodyType,
   useStoreMesh,
-  useStoredMesh
+  useStoredMesh,
+  useOnMessage,
+  useSendMessage
 };

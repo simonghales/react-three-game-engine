@@ -48,7 +48,7 @@ const WorkerApp: FC<{
   const App = app
 
   return (
-      <App physicsWorker={physicsWorker} sendMessageToMain={sendMessageToMain}/>
+      <App worker={worker} physicsWorker={physicsWorker} sendMessageToMain={sendMessageToMain}/>
   )
 
 };

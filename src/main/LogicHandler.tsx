@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSubscribeToMessage } from './Messages';
+import { useOnMessage } from '../shared/Messages';
 import {
   MappedComponents,
   MessageKeys,
@@ -12,7 +12,7 @@ import {
 const LogicHandler: React.FC<{
   mappedComponentTypes: MappedComponents;
 }> = ({ children, mappedComponentTypes }) => {
-  const subscribeToMessage = useSubscribeToMessage();
+  const subscribeToMessage = useOnMessage();
 
   const [components, setComponents] = useState<{
     [key: string]: {

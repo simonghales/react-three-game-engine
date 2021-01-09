@@ -252,7 +252,10 @@ const mappedComponents = {
 ```
 
 When `useSyncWithMainComponent` is mounted / unmounted, the `<Player/>` 
-component will mount / unmount
+component will mount / unmount.
+
+Note: currently this only supports sync'ing from logic -> main, but I will add in the 
+reverse soon.
 
 ### Communication 
 

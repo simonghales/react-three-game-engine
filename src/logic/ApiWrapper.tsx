@@ -3,6 +3,9 @@ import {MessageData} from "../shared/types";
 import PhysicsHandler from "./logicWorkerApp/PhysicsHandler";
 import CollisionsProvider from "../shared/CollisionsProvider";
 import MeshRefs from "../main/MeshRefs";
+import Messages from "../shared/Messages";
+import SendMessages from "../shared/SendMessages";
+import MessageHandler from "./logicWorkerApp/MessageHandler";
 
 export type ContextState = {
   physicsWorker: Worker | MessagePort;
@@ -20,22 +23,30 @@ export const useSendMessageToMain = () => {
 };
 
 const ApiWrapper: React.FC<{
+  worker: Worker,
   physicsWorker: Worker | MessagePort,
   sendMessageToMain: (message: MessageData) => void,
 }> = ({
   children,
+  worker,
   physicsWorker,
   sendMessageToMain
 }) => {
   return (
       <Context.Provider value={{ physicsWorker, sendMessageToMain }}>
-        <MeshRefs>
-          <PhysicsHandler worker={physicsWorker}>
-            <CollisionsProvider>
-                {children}
-            </CollisionsProvider>
-          </PhysicsHandler>
-        </MeshRefs>
+        <Messages>
+          <MessageHandler worker={worker}>
+            <SendMessages worker={worker}>
+              <MeshRefs>
+                <PhysicsHandler worker={physicsWorker}>
+                  <CollisionsProvider>
+                      {children}
+                  </CollisionsProvider>
+                </PhysicsHandler>
+              </MeshRefs>
+            </SendMessages>
+          </MessageHandler>
+        </Messages>
       </Context.Provider>
   );
 };
