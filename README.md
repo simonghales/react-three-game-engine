@@ -19,6 +19,8 @@ for functionality on an as-needed basis for my own games.
 
 Note: if you delve into the source code for this package, it's a bit messy!
 
+Note: right now I'm having issues getting this to run via codesandbox via create-react-app, hopefully I can resolve this eventually.
+
 ## Get Started
 
 ### General / Physics
