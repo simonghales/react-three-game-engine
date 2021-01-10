@@ -23,7 +23,7 @@ export const syncData = (positions: Float32Array, angles: Float32Array) => {
 export const stepWorld = () => {
   var now = Date.now();
   var delta = !lastUpdate ? 0 : (now - lastUpdate) / 1000;
-  planckWorld.step(PHYSICS_UPDATE_RATE, delta);
+  planckWorld.step(PHYSICS_UPDATE_RATE);
   lastUpdate = now;
 };
 
