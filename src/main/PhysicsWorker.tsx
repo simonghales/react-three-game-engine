@@ -5,12 +5,13 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { WorkerMessageType } from './worker/shared/types';
+import {WorkerMessageType, WorkerOwnerMessageType} from './worker/shared/types';
 import WorkerOnMessageProvider from '../shared/WorkerOnMessageProvider';
 import PhysicsSync from '../shared/PhysicsSync';
 import StoredPhysicsData from '../shared/StoredPhysicsData';
 import MeshSubscriptions from '../shared/MeshSubscriptions';
 import PhysicsProvider from '../shared/PhysicsProvider';
+import {useWorkerMessages} from "./hooks/useWorkerMessages";
 
 type ContextState = {
   worker: Worker;
@@ -29,6 +30,7 @@ const PhysicsWorker: FC<{
   const [worker] = useState<Worker>(
     () => new Worker('./worker/index.js', { type: 'module' })
   );
+  const [initiated, setInitiated] = useState(false)
 
   useEffect(() => {
     worker.postMessage({
@@ -39,6 +41,27 @@ const PhysicsWorker: FC<{
     });
   }, [worker]);
 
+  const subscribe = useWorkerMessages(worker)
+
+  useEffect(() => {
+
+    const unsubscribe = subscribe((event) => {
+
+      const type = event.data.type;
+
+      if (type === WorkerOwnerMessageType.INITIATED) {
+        setInitiated(true)
+      }
+
+      return () => {
+        unsubscribe()
+      }
+    })
+
+  }, [subscribe, setInitiated])
+
+  if (!initiated) return null
+
   return (
     <Context.Provider
       value={{
@@ -48,7 +71,7 @@ const PhysicsWorker: FC<{
       <PhysicsProvider worker={worker}>
         <StoredPhysicsData>
           <MeshSubscriptions>
-            <WorkerOnMessageProvider worker={worker}>
+            <WorkerOnMessageProvider subscribe={subscribe}>
               <PhysicsSync worker={worker}>{children}</PhysicsSync>
             </WorkerOnMessageProvider>
           </MeshSubscriptions>

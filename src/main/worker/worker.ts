@@ -1,4 +1,4 @@
-import { WorkerMessageType } from './shared/types';
+import {WorkerMessageType, WorkerOwnerMessageType} from './shared/types';
 import { handleLogicWorkerMessage } from './logicWorker';
 import { init } from './methods';
 import { storedData } from './data';
@@ -34,6 +34,9 @@ selfWorker.onmessage = (event: MessageEvent) => {
     case WorkerMessageType.INIT:
       initiated = true;
       init(props);
+      selfWorker.postMessage({
+        type: WorkerOwnerMessageType.INITIATED,
+      })
       break;
     case WorkerMessageType.ADD_BODY:
       if (!initiated) return

@@ -16,6 +16,7 @@ export enum WorkerOwnerMessageType {
   BEGIN_COLLISION,
   END_COLLISION,
   MESSAGE,
+  INITIATED,
 }
 
 export type Buffers = {
