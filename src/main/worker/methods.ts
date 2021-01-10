@@ -1,5 +1,5 @@
 import { storedData } from './data';
-import { stepWorld, syncData } from './planckjs/world';
+import {initPhysicsListeners, stepWorld, syncData} from './planckjs/world';
 import { PHYSICS_UPDATE_RATE } from './planckjs/config';
 import { generateBuffers } from './utils';
 import { Buffers, WorkerOwnerMessageType } from './shared/types';
@@ -76,5 +76,6 @@ export const init = ({
   if (storedData.logicWorker) {
     storedData.logicBuffers = generateBuffers(maxNumberOfPhysicsObjects);
   }
+  initPhysicsListeners()
   beginPhysicsLoop();
 };

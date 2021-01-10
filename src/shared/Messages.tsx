@@ -59,6 +59,7 @@ const Messages: React.FC = ({ children }) => {
 
   const handleMessage = useCallback(
     ({ key, data }: MessageData) => {
+
       const subscriptions = messageSubscriptions[key];
 
       if (subscriptions) {

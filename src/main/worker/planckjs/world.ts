@@ -4,6 +4,7 @@ import {
   handleEndCollision,
 } from './collisions/collisions';
 import { Contact } from 'planck-js';
+import {PHYSICS_UPDATE_RATE} from "./config";
 
 let lastUpdate = 0;
 
@@ -21,8 +22,8 @@ export const syncData = (positions: Float32Array, angles: Float32Array) => {
 
 export const stepWorld = () => {
   var now = Date.now();
-  var delta = !lastUpdate ? 1 / 60 : (now - lastUpdate) / 1000;
-  planckWorld.step(delta);
+  var delta = !lastUpdate ? 0 : (now - lastUpdate) / 1000;
+  planckWorld.step(PHYSICS_UPDATE_RATE, delta);
   lastUpdate = now;
 };
 
