@@ -1,7 +1,7 @@
 import {dynamicBodiesUuids, existingBodies, planckWorld} from "./shared";
 import {Shape} from "planck-js/lib/shape";
 import {activeCollisionListeners} from "./collisions/data";
-import {addCachedBody, getCachedBody, PhysicsCacheKeys} from "./cache";
+import {addCachedBody, getCachedBody} from "./cache";
 import type {BodyDef, FixtureOpt, Body, Joint} from "planck-js";
 import {Box, Circle, DistanceJoint, RopeJoint, Vec2} from "planck-js";
 import {ValidUUID} from "../shared/types";
@@ -18,15 +18,59 @@ export enum BodyShape {
     circle = 'circle',
 }
 
+type FixtureBase = {
+    shape: BodyShape,
+    fixtureOptions?: Partial<FixtureOpt>,
+}
+
+type BoxFixture = FixtureBase & {
+    hx: number,
+    hy: number,
+    center?: [number, number],
+}
+
+export const createBoxFixture = ({
+                                     width = 1,
+                                     height = 1,
+                                     center,
+                                     fixtureOptions = {}
+                                 }: {
+    width?: number,
+    height?: number,
+    center?: [number, number],
+    fixtureOptions?: Partial<FixtureOpt>
+}): BoxFixture => {
+    const fixture: BoxFixture = {
+        shape: BodyShape.box,
+        hx: width,
+        hy: height,
+        fixtureOptions,
+    }
+    if (center) {
+        fixture.center = center
+    }
+    return fixture
+}
+
+type CircleFixture = FixtureBase & {
+    radius: number,
+}
+
+export const createCircleFixture = ({ radius = 1, fixtureOptions = {} }: {
+    radius?: number,
+    fixtureOptions?: Partial<FixtureOpt>
+}): CircleFixture => {
+    return {
+        shape: BodyShape.circle,
+        radius,
+        fixtureOptions,
+    }
+}
+
+type Fixture = BoxFixture | CircleFixture
+
 type BasicBodyProps = Partial<BodyDef> & {
-    fixtures: {
-        shape: BodyShape,
-        fixtureOptions: Partial<FixtureOpt>,
-        hx?: number,
-        hy?: number,
-        center?: [number, number],
-        radius?: number,
-    }[],
+    fixtures?: Fixture[],
 }
 
 type AddBoxBodyProps = BasicBodyProps & {}
@@ -38,11 +82,9 @@ export type AddBodyDef = BasicBodyProps | AddBoxBodyProps | AddCircleBodyProps
 export type AddBodyProps = AddBodyDef & {
     uuid: ValidUUID,
     listenForCollisions: boolean,
-    cacheKey?: PhysicsCacheKeys,
+    cacheKey?: string,
     attachToRope?: boolean,
 }
-
-// todo - add support for multiple fixtures...
 
 export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], attachToRope = false, ...props}: AddBodyProps) => {
 
@@ -53,18 +95,8 @@ export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], att
     }
 
     if (listenForCollisions) {
-        activeCollisionListeners[uuid as string] = true
+        activeCollisionListeners[uuid] = true
     }
-
-    /*
-    fixtureOptions = {
-        userData: {
-            uuid,
-            ...fixtureOptions?.userData
-        },
-        ...fixtureOptions,
-    }
-     */
 
     const bodyDef: BodyDef = {
         type: BodyType.static,
@@ -133,7 +165,11 @@ export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], att
 
         if (fixtures && fixtures.length > 0) {
 
-            fixtures.forEach(({shape, fixtureOptions, hx, hy, radius, center}, fixtureIndex) => {
+            fixtures.forEach((fixture, fixtureIndex) => {
+
+                const {shape} = fixture
+
+                let fixtureOptions = fixture.fixtureOptions ?? {}
 
                 fixtureOptions = {
                     ...fixtureOptions,
@@ -148,9 +184,11 @@ export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], att
 
                 switch (shape) {
                     case BodyShape.box:
+                        const {hx, hy, center} = fixture as BoxFixture
                         bodyShape = Box((hx as number) / 2, (hy as number) / 2, center ? Vec2(center[0], center[1]) : undefined) as unknown as Shape
                         break;
                     case BodyShape.circle:
+                        const {radius} = fixture as CircleFixture
                         bodyShape = Circle((radius as number)) as unknown as Shape
                         break;
                     default:
@@ -167,6 +205,7 @@ export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], att
                     }
                 }
 
+                // todo - handle rope properly...
                 if (attachToRope) {
 
                     const {position, angle} = props
@@ -226,7 +265,7 @@ export const addBody = ({uuid, cacheKey, listenForCollisions, fixtures = [], att
 
 export type RemoveBodyProps = {
     uuid: ValidUUID,
-    cacheKey?: PhysicsCacheKeys
+    cacheKey?: string
 }
 
 const tempVec = Vec2(0, 0)

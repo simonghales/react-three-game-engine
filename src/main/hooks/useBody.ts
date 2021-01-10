@@ -3,7 +3,6 @@ import {
   BodyType,
   UpdateBodyData,
 } from '../worker/planckjs/bodies';
-import { PhysicsCacheKeys } from '../worker/planckjs/cache';
 import {
   MutableRefObject,
   useLayoutEffect,
@@ -78,10 +77,10 @@ export const useBodyApi = (passedUuid: ValidUUID): BodyApi => {
   return api;
 };
 
-type BodyParams = {
+export type BodyParams = {
   listenForCollisions?: boolean;
   applyAngle?: boolean;
-  cacheKey?: PhysicsCacheKeys;
+  cacheKey?: string;
   uuid?: ValidUUID;
   fwdRef?: MutableRefObject<Object3D>;
 }

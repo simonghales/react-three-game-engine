@@ -1,14 +1,10 @@
 import { Body } from 'planck-js';
 
-export enum PhysicsCacheKeys {
-  PUNCH = 'PUNCH',
-}
-
 export const cachedBodies: {
   [key: string]: Body[];
 } = {};
 
-export const getCachedBody = (key: PhysicsCacheKeys): Body | null => {
+export const getCachedBody = (key: string): Body | null => {
   const bodies = cachedBodies[key];
   if (bodies && bodies.length > 0) {
     const body = bodies.pop();
@@ -19,7 +15,7 @@ export const getCachedBody = (key: PhysicsCacheKeys): Body | null => {
   return null;
 };
 
-export const addCachedBody = (key: PhysicsCacheKeys, body: Body) => {
+export const addCachedBody = (key: string, body: Body) => {
   if (cachedBodies[key]) {
     cachedBodies[key].push(body);
   } else {

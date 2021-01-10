@@ -9,10 +9,11 @@ import { useFixedUpdate } from './shared/PhysicsSync';
 import {
   useSubscribeMesh,
 } from './shared/MeshSubscriptions';
-import { BodyShape, BodyType } from './main/worker/planckjs/bodies';
+import { BodyShape, BodyType, createBoxFixture, createCircleFixture } from './main/worker/planckjs/bodies';
 import {useStoredMesh, useStoreMesh } from './main/MeshRefs';
 import { useOnMessage } from './shared/Messages';
 import { useSendMessage } from './shared/SendMessages';
+import { Body, BodySync } from "./main/Body";
 
 export {
   Engine,
@@ -32,5 +33,9 @@ export {
   useStoreMesh,
   useStoredMesh,
   useOnMessage,
-  useSendMessage
+  useSendMessage,
+  createBoxFixture,
+  createCircleFixture,
+  Body,
+  BodySync
 };
