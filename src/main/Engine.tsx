@@ -5,21 +5,22 @@ import { LogicWorker } from '../index';
 import CollisionsProvider from '../shared/CollisionsProvider';
 import { MappedComponents } from '../shared/types';
 import MeshRefs from "./MeshRefs";
+import {PhysicsProps} from "./worker/shared/types";
 
-export const Engine: FC<{
-  maxNumberOfPhysicsObjects?: number;
+export const Engine: FC<PhysicsProps & {
   logicWorker?: Worker;
   logicMappedComponents?: MappedComponents;
 }> = ({
   children,
-  maxNumberOfPhysicsObjects = 100,
+  config,
+  worldParams,
   logicWorker,
   logicMappedComponents = {},
 }) => {
   if (logicWorker) {
     return (
       <MeshRefs>
-        <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
+        <PhysicsWorker config={config} worldParams={worldParams}>
           <CollisionsProvider>
             <R3FPhysicsObjectUpdater>
               <LogicWorker
@@ -37,7 +38,7 @@ export const Engine: FC<{
 
   return (
     <MeshRefs>
-      <PhysicsWorker maxNumberOfPhysicsObjects={maxNumberOfPhysicsObjects}>
+      <PhysicsWorker config={config} worldParams={worldParams}>
         <CollisionsProvider>
           <R3FPhysicsObjectUpdater>
               {children}

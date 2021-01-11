@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {WorkerMessageType, WorkerOwnerMessageType} from './worker/shared/types';
+import {PhysicsProps, WorkerMessageType, WorkerOwnerMessageType} from './worker/shared/types';
 import WorkerOnMessageProvider from '../shared/WorkerOnMessageProvider';
 import PhysicsSync from '../shared/PhysicsSync';
 import StoredPhysicsData from '../shared/StoredPhysicsData';
@@ -23,9 +23,7 @@ export const usePhysicsWorker = () => {
   return useContext(Context).worker;
 };
 
-const PhysicsWorker: FC<{
-  maxNumberOfPhysicsObjects: number;
-}> = ({ children, maxNumberOfPhysicsObjects }) => {
+const PhysicsWorker: FC<PhysicsProps> = ({ children, config, worldParams }) => {
   // @ts-ignore
   const [worker] = useState<Worker>(
     () => new Worker('./worker/index.js', { type: 'module' })
@@ -36,7 +34,8 @@ const PhysicsWorker: FC<{
     worker.postMessage({
       type: WorkerMessageType.INIT,
       props: {
-        maxNumberOfPhysicsObjects: maxNumberOfPhysicsObjects,
+        config,
+        worldParams,
       },
     });
   }, [worker]);
