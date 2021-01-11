@@ -24,10 +24,14 @@ export const useWorkerMessages = (worker: undefined | Worker | MessagePort) => {
 
   useEffect(() => {
     if (!worker) return;
+    const previousOnMessage = worker.onmessage;
     worker.onmessage = (event: MessageEvent) => {
       Object.values(subscriptionsRef.current).forEach(callback => {
         callback(event);
       });
+      if (previousOnMessage) {
+        (previousOnMessage as any)(event);
+      }
     };
   }, [worker, subscriptionsRef]);
 
