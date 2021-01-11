@@ -6,19 +6,19 @@ import {
   sendCollisionEndEvent,
 } from '../../functions';
 
-const getFixtureData = (fixture: Fixture): FixtureUserData | null => {
+export const getFixtureData = (fixture: Fixture): FixtureUserData | null => {
   const userData = fixture.getUserData() as null | FixtureUserData;
   return userData || null;
 };
 
-const getFixtureUuid = (data: FixtureUserData | null): string => {
+export const getFixtureUuid = (data: FixtureUserData | null): string => {
   if (data && data['uuid']) {
     return data.uuid;
   }
   return '';
 };
 
-const getFixtureIndex = (data: FixtureUserData | null): number => {
+export const getFixtureIndex = (data: FixtureUserData | null): number => {
   if (data) {
     return data.fixtureIndex;
   }

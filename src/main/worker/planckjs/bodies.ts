@@ -18,12 +18,12 @@ export enum BodyShape {
     circle = 'circle',
 }
 
-type FixtureBase = {
+export type FixtureBase = {
     shape: BodyShape,
     fixtureOptions?: Partial<FixtureOpt>,
 }
 
-type BoxFixture = FixtureBase & {
+export type BoxFixture = FixtureBase & {
     hx: number,
     hy: number,
     center?: [number, number],
@@ -52,7 +52,7 @@ export const createBoxFixture = ({
     return fixture
 }
 
-type CircleFixture = FixtureBase & {
+export type CircleFixture = FixtureBase & {
     radius: number,
 }
 

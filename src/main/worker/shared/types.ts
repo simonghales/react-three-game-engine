@@ -1,3 +1,5 @@
+import { WorldDef } from 'planck-js';
+
 export enum WorkerMessageType {
   INIT,
   STEP,
@@ -25,3 +27,11 @@ export type Buffers = {
 };
 
 export type ValidUUID = string | number;
+
+export type PhysicsProps = {
+  config?: {
+    maxNumberOfDynamicObjects?: number;
+    updateRate?: number;
+  };
+  worldParams?: WorldDef;
+};
