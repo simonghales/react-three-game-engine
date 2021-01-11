@@ -288,8 +288,6 @@ const useAddBody = (bodies: BodiesMap, cachedBodies: CachedBodiesMap) => {
 
       bodies.set(uuid, body);
 
-      console.log('added body', bodies);
-
       return body;
     },
     [world, bodies, getCachedBody, addDynamicBody, addCollisionListeners]
