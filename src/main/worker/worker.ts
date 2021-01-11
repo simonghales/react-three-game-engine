@@ -23,7 +23,7 @@ selfWorker.onmessage = (event: MessageEvent) => {
       } = config;
       render(
         createElement(
-          require('./app/App').App,
+          require('./app/index').App,
           {
             worker: selfWorker,
             config: {
