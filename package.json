@@ -1,5 +1,5 @@
 {
-  "version": "0.9.2-beta.7",
+  "version": "0.9.2-beta.8",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,7 +29,7 @@
     "build-worker": "tsdx build --entry src/main/worker/worker.ts --name worker && rm -rf temp && mkdir temp && mv dist/* temp/",
     "build-worker-final": "mkdir dist/worker && mv temp/* dist/worker && rm -rf temp",
     "build-worker-app": "tsdx build --entry src/main/worker/app/index.tsx --name physicsApp && rm -rf temp3 && mkdir temp3 && mv dist/* temp3/",
-    "build-worker-app-final": "mkdir dist/app && mv temp3/* dist/app && rm -rf temp3",
+    "build-worker-app-final": "mkdir dist/worker/app && mv temp3/* dist/worker/app && rm -rf temp3",
     "build-logic-worker": "tsdx build --entry src/logic/logicWorkerApp/index.tsx --name workerApp && rm -rf temp2 && mkdir temp2 && mv dist/* temp2/",
     "build-logic-worker-final": "mkdir dist/logicWorkerApp && mv temp2/* dist/logicWorkerApp && rm -rf temp2",
     "build": "npm run build-logic-worker && npm run build-worker && npm run build-worker-app && tsdx build && npm run build-worker-final && npm run build-worker-app-final && npm run build-logic-worker-final",
