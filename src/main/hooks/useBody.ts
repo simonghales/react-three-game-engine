@@ -83,7 +83,7 @@ export type BodyParams = {
   cacheKey?: string;
   uuid?: ValidUUID;
   fwdRef?: MutableRefObject<Object3D>;
-}
+};
 
 export const useBody = (
   propsFn: () => AddBodyDef,
@@ -91,11 +91,11 @@ export const useBody = (
 ): [MutableRefObject<Object3D>, BodyApi, ValidUUID] => {
   const {
     applyAngle = false,
-        cacheKey,
-        uuid: passedUUID,
-      fwdRef,
-      listenForCollisions = false,
-  } = bodyParams
+    cacheKey,
+    uuid: passedUUID,
+    fwdRef,
+    listenForCollisions = false,
+  } = bodyParams;
   const localRef = useRef<Object3D>((null as unknown) as Object3D);
   const ref = fwdRef ? fwdRef : localRef;
   const [uuid] = useState(() => {

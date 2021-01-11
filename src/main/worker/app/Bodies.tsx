@@ -35,7 +35,7 @@ export const useSubscribeToWorkerMessages = (
   useEffect(() => {
     const unsubscribe = subscribe(messageHandler);
 
-    const unsubscribeLogic = subscribe(messageHandler);
+    const unsubscribeLogic = logicSubscribe(messageHandler);
 
     return () => {
       unsubscribe();
@@ -288,6 +288,8 @@ const useAddBody = (bodies: BodiesMap, cachedBodies: CachedBodiesMap) => {
 
       bodies.set(uuid, body);
 
+      console.log('added body', bodies);
+
       return body;
     },
     [world, bodies, getCachedBody, addDynamicBody, addCollisionListeners]
@@ -355,7 +357,7 @@ const useSetBody = (bodies: BodiesMap) => {
     ({ uuid, method, methodParams }: SetBodyProps) => {
       const body = bodies.get(uuid);
       if (!body) {
-        console.warn(`Body not found for ${uuid}`);
+        console.warn(`Body not found for ${uuid}`, bodies);
         return;
       }
       switch (method) {
