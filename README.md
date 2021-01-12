@@ -33,7 +33,7 @@ plus
 
 `npm install three react-three-fiber planck-js`
 
-2. Import and add `<Engine/>` component within your r3f `<Canvas/>` component. 
+2. Import and add [`<Engine/>`](docs/api/API.md#Engine) component within your r3f `<Canvas/>` component. 
 
 ```jsx
 import { Engine } from 'react-three-game-engine'
@@ -48,7 +48,7 @@ import { Canvas } from 'react-three-fiber'
 </Canvas>
 ```
 
-3. Create a planck.js driven physics body
+3. Create a planck.js driven physics [body](docs/api/API.md#Bodies)
 
 ```jsx
 import { useBody, BodyType, BodyShape } from 'react-three-game-engine'
@@ -70,13 +70,13 @@ const [ref, api] = useBody(() => ({
 }))
 ```
 
-4. Control the body via the returned api
+4. Control the body via the returned [api](docs/api/API.md#BodyApi)
 
 ```jsx
 api.setLinearVelocity(Vec2(1, 1))
 ```
 
-5. Utilise `useFixedUpdate` for controlling the body
+5. Utilise [`useFixedUpdate`](docs/api/API.md#usefixedupdate) for controlling the body
 
 ```jsx
 import { useFixedUpdate } from 'react-three-game-engine'
@@ -112,7 +112,7 @@ check out my repo [react-three-game-starter](https://github.com/simonghales/reac
 for an example of how you can do so with `create-react-app` without having to eject.
 
 1. Create a React component to host your logic React app, export a new component wrapped with 
-`withLogicWrapper`
+[`withLogicWrapper`](docs/api/API.md#withLogicWrapper)
 
 ```jsx
 import {withLogicWrapper} from "react-three-game-engine";
@@ -144,7 +144,7 @@ logicWorkerHandler(self, require("../path/to/logic/app/component").LgApp)
 const [logicWorker] = useState(() => new Worker('../path/to/worker', { type: 'module' }))
 ```
 
-4. Pass worker to `<Engine/>`
+4. Pass worker to [`<Engine/>`](docs/api/API.md#Engine)
 
 ```jsx
 <Engine logicWorker={logicWorker}>
@@ -158,8 +158,8 @@ synchronised with the physics worker as well.
 ### Controlling a body through both the main, and logic apps.
 
 To control a body via either the main or logic apps, you would create the body 
-within one app via `useBody` and then within the other app you can get api 
-access via `useBodyApi`.
+within one app via [`useBody`](docs/api/API.md#useBody) and then within the other app you can get api 
+access via [`useBodyApi`](docs/api/API.md#useBodyApi).
 
 However you need to know the `uuid` of the body you wish to control. By default 
 the uuid is one generated via threejs, but you can specify one yourself.
@@ -200,7 +200,7 @@ and then get api access via the main app, and use that to move the body around.
 3. Additionally, if you are creating your body in main / logic, you'll likely want to have 
 access to the position / rotation of the body as well.
 
-You can use `useSubscribeMesh` and pass in a ref you've created, which will synchronize 
+You can use [`useSubscribeMesh`](docs/api/API.md#useSubscribeMesh) and pass in a ref you've created, which will synchronize 
 with the physics body.
 
 ```jsx
@@ -219,7 +219,7 @@ return (
 
 ### Synchronising Logic App with Main App
 
-I've added in `useSyncWithMainComponent` to sync from the logic app to the main app
+I've added in [`useSyncWithMainComponent`](docs/api/API.md#useSyncWithMainComponent) to sync from the logic app to the main app
 
 1. Within a component running on the logic app
 
@@ -255,7 +255,7 @@ const mappedComponents = {
 
 ```
 
-When `useSyncWithMainComponent` is mounted / unmounted, the `<Player/>` 
+When [`useSyncWithMainComponent`](docs/api/API.md#useSyncWithMainComponent) is mounted / unmounted, the `<Player/>` 
 component will mount / unmount.
 
 Note: currently this only supports sync'ing from logic -> main, but I will add in the 
