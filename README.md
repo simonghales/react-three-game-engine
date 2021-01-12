@@ -263,8 +263,8 @@ reverse soon.
 
 ### Communication 
 
-To communicate between the main and logic workers you can use `useSendMessage` 
-to send and `useOnMessage` to subscribe
+To communicate between the main and logic workers you can use [`useSendMessage`](docs/api/API.md#useSendMessage) 
+to send and [`useOnMessage`](docs/api/API.md#useOnMessage) to subscribe
 
 ```jsx
 import {useSendMessage} from "react-three-game-engine"
@@ -300,6 +300,6 @@ unsubscribe()
 
 ## API
 
-[Read the API documentation](API.md)
+[Read the API documentation](docs/api/API.md)
 
 
