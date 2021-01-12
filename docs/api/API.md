@@ -379,3 +379,20 @@ const unsubscribe = onMessage('messageKey', (data) => {
 unsubscribe()
 
 ```
+
+## Misc
+
+### Mesh Storage
+
+#### useStoreMesh
+
+```tsx
+useStoreMesh: (uuid: string, mesh: Object3D)
+```
+
+#### useStoredMesh
+
+```tsx
+useStoredMesh: (uuid: string) => Object3D | null
+```
+
