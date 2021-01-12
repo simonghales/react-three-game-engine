@@ -43,13 +43,13 @@ type worldParams = {
 _optional_
 
 A Web Worker that will be run as the logic worker, synchronized with the 
-physics app.
+physics app. [Read more here.](../../README.md#react-logic-app-worker)
 
 
 #### logicMappedComponents
 _optional_
 
-Facilities synchronising components from the logic app with the main app.
+Facilitates synchronising components from the logic app with the main app. [Read more here.](../../README.md#synchronising-logic-app-with-main-app)
 
 ```tsx
 type logicMappedComponents = {
