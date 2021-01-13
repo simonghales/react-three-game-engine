@@ -396,3 +396,82 @@ useStoreMesh: (uuid: string, mesh: Object3D)
 useStoredMesh: (uuid: string) => Object3D | null
 ```
 
+### Mesh Instancing
+
+You'll need to install `@react-three/drei`
+
+#### InstancesProvider
+
+Place inside of `<Engine/>`
+
+```tsx
+<Engine>
+    <InstancesProvider>
+        {/*...*/}
+    </InstancesProvider>
+</Engine>
+```
+
+#### InstancedMesh
+
+```tsx
+<InstancedMesh
+    meshKey                     // unique key
+    maxInstances                // maximum number of instances, smaller = better performance
+    gltfPath                    // e.g. /model.gltf
+    meshProps                   // optional - params that go on <instancedMesh/> for r3f, e.g. castShadow
+/>
+
+type Props = {
+    meshKey: string,
+    maxInstances: number,
+    gltfPath: string,
+    meshProps?: JSX.IntrinsicElements['instancedMesh']
+}
+
+```
+
+gltfPath is passed to `useGltf` from `@react-three/drei`
+
+Place inside of `<InstancesProvider/>`
+
+```tsx
+<InstancesProvider>
+    <InstancedMesh meshKey={"example"} 
+                   maxInstances={10} 
+                   gltfPath={"path/to/model.gltf"}
+                   meshProps={{
+                        castShadow: true, 
+                        receiveShadow: true
+                   }}/>
+</InstancesProvider>
+```
+
+#### Instance
+
+```tsx
+<Instance
+    meshKey         // unique key
+    position        // optional    
+    rotation        // optional 
+    scale           // optional 
+    />
+
+type Props = {
+    meshKey: string,
+    position?: [number, number, number],
+    rotation?: [number, number, number],
+    scale?: [number, number, number]
+}
+
+<Instance meshKey={"example"} position={[10, 20, 0]}/>
+
+```
+
+#### useInstancedMesh
+
+todo...
+
+#### useAddInstance
+
+todo...

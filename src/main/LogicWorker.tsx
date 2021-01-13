@@ -9,7 +9,7 @@ import Messages, { useMessagesContext } from '../shared/Messages';
 import LogicHandler from './LogicHandler';
 import SendMessages from "../shared/SendMessages";
 
-const LogicWorker: React.FC<{
+const LogicWorkerInner: React.FC<{
   worker: Worker;
 }> = ({ children, worker }) => {
   const physicsWorker = usePhysicsWorker();
@@ -39,21 +39,19 @@ const LogicWorker: React.FC<{
   return <>{children}</>;
 };
 
-const LogicWorkerWrapper: React.FC<{
+export const LogicWorker: React.FC<{
   worker: Worker;
   logicMappedComponents: MappedComponents;
 }> = ({ worker, children, logicMappedComponents }) => {
   return (
     <Messages>
       <SendMessages worker={worker}>
-        <LogicWorker worker={worker}>
+        <LogicWorkerInner worker={worker}>
           <LogicHandler mappedComponentTypes={logicMappedComponents}>
             {children}
           </LogicHandler>
-        </LogicWorker>
+        </LogicWorkerInner>
       </SendMessages>
     </Messages>
   );
 };
-
-export default LogicWorkerWrapper;
