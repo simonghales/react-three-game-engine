@@ -13,6 +13,13 @@ import {useStoredMesh, useStoreMesh } from './main/MeshRefs';
 import { useOnMessage } from './shared/Messages';
 import { useSendMessage } from './shared/SendMessages';
 import { Body, BodySync } from "./main/Body";
+import {
+  useAddInstance,
+  useInstancedMesh,
+  Instance,
+  InstancedMesh,
+  InstancesProvider,
+} from "./main/InstancesProvider"
 
 export {
   Engine,
@@ -34,5 +41,10 @@ export {
   createBoxFixture,
   createCircleFixture,
   Body,
-  BodySync
+  BodySync,
+  useAddInstance,
+  useInstancedMesh,
+  Instance,
+  InstancedMesh,
+  InstancesProvider,
 };

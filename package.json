@@ -41,6 +41,7 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
+    "@react-three/drei": ">=2.2",
     "planck-js": ">=0.3",
     "react": ">=16.13",
     "react-dom": ">=16.13",
@@ -60,6 +61,7 @@
   "module": "dist/react-three-game-engine.esm.js",
   "size-limit": [],
   "devDependencies": {
+    "@react-three/drei": "^2.2.15",
     "@size-limit/preset-small-lib": "^4.9.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
