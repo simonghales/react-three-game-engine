@@ -435,15 +435,19 @@ gltfPath is passed to `useGltf` from `@react-three/drei`
 
 Place inside of `<InstancesProvider/>`
 
+You need to wrap it with React's `<Suspense/>`
+
 ```tsx
 <InstancesProvider>
-    <InstancedMesh meshKey={"example"} 
-                   maxInstances={10} 
-                   gltfPath={"path/to/model.gltf"}
-                   meshProps={{
-                        castShadow: true, 
-                        receiveShadow: true
-                   }}/>
+    <Suspense fallback={null}>
+        <InstancedMesh meshKey={"example"} 
+                       maxInstances={10} 
+                       gltfPath={"path/to/model.gltf"}
+                       meshProps={{
+                            castShadow: true, 
+                            receiveShadow: true
+                       }}/>
+    </Suspense>
 </InstancesProvider>
 ```
 
