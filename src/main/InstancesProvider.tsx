@@ -87,7 +87,8 @@ export const InstancedMesh: React.FC<{
     meshKey: string,
     maxInstances: number,
     gltfPath: string,
-}> = ({meshKey, maxInstances, gltfPath}) => {
+    meshProps?: JSX.IntrinsicElements['instancedMesh']
+}> = ({meshKey, maxInstances, gltfPath, meshProps = {}}) => {
 
     const createInstancedMesh = useCreateInstancedMesh()
 
@@ -193,7 +194,7 @@ export const InstancedMesh: React.FC<{
         <>
             {meshes.map((mesh) => (
                 <instancedMesh ref={handleRef} matrixAutoUpdate={false} args={[mesh.geometry, mesh.material, maxInstances] as any}
-                               key={mesh.uuid} castShadow receiveShadow/>
+                               key={mesh.uuid} {...meshProps}/>
             ))}
         </>
     )
