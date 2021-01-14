@@ -34,8 +34,8 @@ export const App: React.FC<{
 
   const logicSubscribe = useSubscribeLogicWorker(logicWorker);
 
-  const buffers = useBuffers(maxNumberOfDynamicObjects);
-  const logicBuffers = useBuffers(!logicWorker ? 0 : maxNumberOfDynamicObjects);
+  const buffers = useBuffers(maxNumberOfDynamicObjects, 'main');
+  const logicBuffers = useBuffers(!logicWorker ? 0 : maxNumberOfDynamicObjects, 'logic');
 
   const buffersRef = useRef({
     mainCount: 0,

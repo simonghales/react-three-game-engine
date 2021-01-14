@@ -65,16 +65,18 @@ export const Instance: React.FC<{
     meshKey: string,
 } & InstanceData> = ({meshKey, ...data}) => {
 
-    const didMount = useDidMount()
+    const isMountRef = useRef(true)
 
     const update = useInstancedMesh(meshKey, data)
 
     const {position, rotation, scale} = data
 
     useEffect(() => {
-        if (didMount()) {
-            update({position, rotation, scale})
+        if (isMountRef.current) {
+            isMountRef.current = false
+            return
         }
+        update({position, rotation, scale})
     }, [position, rotation, scale, update])
 
     return null

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { Buffers } from '../shared/types';
 import { useDidMount } from '../../../utils/hooks';
 
@@ -9,17 +9,18 @@ export const generateBuffers = (maxNumberOfDynamicObjects: number): Buffers => {
   };
 };
 
-export const useBuffers = (maxNumberOfDynamicObjects: number): Buffers => {
+export const useBuffers = (maxNumberOfDynamicObjects: number, debug: string): Buffers => {
+  const isMountRef = useRef(true)
   const [buffers] = useState(() => generateBuffers(maxNumberOfDynamicObjects));
 
-  const didMount = useDidMount();
-
   useEffect(() => {
-    if (didMount()) {
-      const { positions, angles } = generateBuffers(maxNumberOfDynamicObjects);
-      buffers.positions = positions;
-      buffers.angles = angles;
+    if (isMountRef.current) {
+      isMountRef.current = false
+      return
     }
+    const { positions, angles } = generateBuffers(maxNumberOfDynamicObjects);
+    buffers.positions = positions;
+    buffers.angles = angles;
   }, [maxNumberOfDynamicObjects]);
 
   return buffers;

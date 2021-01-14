@@ -6,6 +6,7 @@ import {
   WorkerOwnerMessageType,
 } from '../shared/types';
 import { useWorldState } from './WorldState';
+import {generateBuffers} from "./buffers";
 
 const useSyncData = () => {
   const { dynamicBodies, bodies } = useWorldState();
@@ -54,9 +55,14 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
     (target: Worker | MessagePort, buffer: Buffers, isMain: boolean) => {
       const { positions, angles } = buffer;
       if (!(positions.byteLength !== 0 && angles.byteLength !== 0)) {
-        // console.log('cant send to', isMain ? 'main' : 'logic');
+        console.warn('cant send physics update to', isMain ? 'main' : 'logic')
+        const { positions: newPositions, angles: newAngles } = generateBuffers(maxNumberOfDynamicObjects);
         if (isMain) {
+          mainBuffers.positions = newPositions
+          mainBuffers.angles = newAngles
         } else {
+          logicBuffers.positions = newPositions
+          logicBuffers.angles = newAngles
         }
         return;
       }
