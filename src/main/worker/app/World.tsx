@@ -24,6 +24,16 @@ const useSyncData = () => {
   }, []);
 };
 
+const debug = {
+  mainSent: false,
+  mainLogged: false,
+  mainLogged2: false,
+  logicSent: false,
+  logicLogged: false,
+  logicLogged2: false,
+}
+
+
 const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
   const {
     bodiesNeedSyncRef,
@@ -37,8 +47,31 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
     (target: Worker | MessagePort, buffer: Buffers, isMain: boolean) => {
       const { positions, angles } = buffer;
       if (!(positions.byteLength !== 0 && angles.byteLength !== 0)) {
+        if (isMain) {
+          if (debug.mainLogged) return
+          console.log('cant send update to main', debug.mainSent)
+          debug.mainLogged = true
+        } else {
+          if (debug.logicLogged) return
+          console.log('cant send update to logic', debug.logicSent)
+          debug.logicLogged = true
+        }
         return;
       }
+      if (isMain) {
+        if (!debug.mainLogged2) {
+          console.log('sending to main')
+          debug.mainLogged2 = true
+        }
+        debug.mainSent = true
+      } else {
+        if (!debug.logicLogged2) {
+          console.log('sending to logic')
+          debug.logicLogged2 = true
+        }
+        debug.logicSent = true
+      }
+      console.log(`sending to:`, isMain)
       syncData(positions, angles);
       const rawMessage: any = {
         type: WorkerOwnerMessageType.PHYSICS_STEP,
@@ -109,6 +142,9 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
       positions: Float32Array,
       angles: Float32Array
     ) => {
+
+      console.log('step processed')
+
       const buffers = isMain ? mainBuffers : logicBuffers;
 
       buffers.positions = positions;
