@@ -35,6 +35,12 @@ const debug = {
 };
 
 const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
+
+  const localStateRef = useRef({
+    failedMainCount: 0,
+    failedLogicCount: 0,
+  })
+
   const {
     bodiesNeedSyncRef,
     logicBodiesNeedSyncRef,
@@ -56,15 +62,30 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
       const { positions, angles } = buffer;
       if (!(positions.byteLength !== 0 && angles.byteLength !== 0)) {
         console.warn('cant send physics update to', isMain ? 'main' : 'logic')
-        const { positions: newPositions, angles: newAngles } = generateBuffers(maxNumberOfDynamicObjects);
         if (isMain) {
-          mainBuffers.positions = newPositions
-          mainBuffers.angles = newAngles
+          if (localStateRef.current.failedMainCount >= 2) {
+            const { positions: newPositions, angles: newAngles } = generateBuffers(maxNumberOfDynamicObjects);
+            mainBuffers.positions = newPositions
+            mainBuffers.angles = newAngles
+          }
         } else {
-          logicBuffers.positions = newPositions
-          logicBuffers.angles = newAngles
+          if (localStateRef.current.failedLogicCount >= 2) {
+            const {positions: newPositions, angles: newAngles} = generateBuffers(maxNumberOfDynamicObjects);
+            logicBuffers.positions = newPositions
+            logicBuffers.angles = newAngles
+          }
+        }
+        if (isMain) {
+          localStateRef.current.failedMainCount += 1
+        } else {
+          localStateRef.current.failedLogicCount += 1
         }
         return;
+      }
+      if (isMain) {
+        localStateRef.current.failedMainCount = 0
+      } else {
+        localStateRef.current.failedLogicCount = 0
       }
       syncData(positions, angles);
       const rawMessage: any = {
