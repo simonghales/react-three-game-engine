@@ -80,7 +80,18 @@ const PhysicsSync: FC<{
   const onMessage = useWorkerOnMessage();
   const storedData = useStoredData();
 
+  const debugRefs = useRef<{
+      timer: any,
+  }>({
+      timer: null,
+  })
+
   useEffect(() => {
+
+    debugRefs.current.timer = setTimeout(() => {
+        console.log('over 1 second since last physics step...')
+    }, 1000)
+
     const onPhysicsStep = () => {
       const lastUpdate = lastUpdateRef.current;
       const now = Date.now();
@@ -98,6 +109,12 @@ const PhysicsSync: FC<{
       const type = event.data.type;
 
       if (type === WorkerOwnerMessageType.PHYSICS_STEP) {
+        if (debugRefs.current.timer) {
+            clearTimeout(debugRefs.current.timer)
+        }
+        debugRefs.current.timer = setTimeout(() => {
+          console.log('over 1 second since last physics step...')
+        }, 1000)
         const positions = event.data.positions as Float32Array;
         const angles = event.data.angles as Float32Array;
         updateMeshes(positions, angles, noLerping);
