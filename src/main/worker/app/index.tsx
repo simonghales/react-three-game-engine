@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Vec2, World, WorldDef } from 'planck-js';
 import { AppContext } from './appContext';
 import { useWorkerMessages } from '../../hooks/useWorkerMessages';
@@ -35,7 +35,12 @@ export const App: React.FC<{
   const logicSubscribe = useSubscribeLogicWorker(logicWorker);
 
   const buffers = useBuffers(maxNumberOfDynamicObjects);
-  const logicBuffers = useBuffers(!logicWorker ? maxNumberOfDynamicObjects : 0);
+  const logicBuffers = useBuffers(!logicWorker ? 0 : maxNumberOfDynamicObjects);
+
+  const buffersRef = useRef({
+    mainCount: 0,
+    logicCount: 0,
+  });
 
   useEffect(() => {
     worker.postMessage({
@@ -54,6 +59,8 @@ export const App: React.FC<{
         logicSubscribe,
         buffers,
         logicBuffers,
+        buffersRef,
+        maxNumberOfDynamicObjects,
       }}
     >
       <WorldState>

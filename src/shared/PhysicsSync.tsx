@@ -51,7 +51,8 @@ const PhysicsSync: FC<{
 
   const getPhysicsStepTimeRemainingRatio = useCallback(
     (previousTime: number) => {
-      const nextExpectedUpdate = lastUpdateRef.current + PHYSICS_UPDATE_RATE + 1;
+      const nextExpectedUpdate =
+        lastUpdateRef.current + PHYSICS_UPDATE_RATE + 1;
       const time = Date.now();
       let ratio = (time - previousTime) / (nextExpectedUpdate - previousTime);
       ratio = ratio > 1 ? 1 : ratio;
@@ -81,18 +82,17 @@ const PhysicsSync: FC<{
   const storedData = useStoredData();
 
   const debugRefs = useRef<{
-      timer: any,
-      hasReceived: boolean,
+    timer: any;
+    hasReceived: boolean;
   }>({
-      timer: null,
-      hasReceived: false,
-  })
+    timer: null,
+    hasReceived: false,
+  });
 
   useEffect(() => {
-
-    debugRefs.current.timer = setInterval(() => {
-        console.log('initial: over 1 second since last physics step...', debugRefs.current.hasReceived)
-    }, 1000)
+    debugRefs.current.timer = setTimeout(() => {
+      console.warn('over 1 second since last physics step...');
+    }, 1000);
 
     const onPhysicsStep = () => {
       const lastUpdate = lastUpdateRef.current;
@@ -111,17 +111,16 @@ const PhysicsSync: FC<{
       const type = event.data.type;
 
       if (type === WorkerOwnerMessageType.PHYSICS_STEP) {
-        debugRefs.current.hasReceived = true
+        debugRefs.current.hasReceived = true;
         if (debugRefs.current.timer) {
-            clearInterval(debugRefs.current.timer)
+          clearInterval(debugRefs.current.timer);
         }
-        debugRefs.current.timer = setInterval(() => {
-          console.log('over 1 second since last physics step...', debugRefs.current.hasReceived)
-        }, 1000)
+        debugRefs.current.timer = setTimeout(() => {
+          console.warn('over 1 second since last physics step...');
+        }, 1000);
         const positions = event.data.positions as Float32Array;
         const angles = event.data.angles as Float32Array;
         updateMeshes(positions, angles, noLerping);
-          console.log('received update am now responding...')
         worker.postMessage(
           {
             type: WorkerMessageType.PHYSICS_STEP_PROCESSED,

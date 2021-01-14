@@ -31,8 +31,7 @@ const debug = {
   logicSent: false,
   logicLogged: false,
   logicLogged2: false,
-}
-
+};
 
 const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
   const {
@@ -41,37 +40,26 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
     dynamicBodies,
   } = useWorldState();
 
+  const {
+    buffers: mainBuffers,
+    logicBuffers,
+    worker,
+    logicWorker,
+    maxNumberOfDynamicObjects,
+  } = useAppContext();
+
   const syncData = useSyncData();
 
   return useCallback(
     (target: Worker | MessagePort, buffer: Buffers, isMain: boolean) => {
       const { positions, angles } = buffer;
       if (!(positions.byteLength !== 0 && angles.byteLength !== 0)) {
+        // console.log('cant send to', isMain ? 'main' : 'logic');
         if (isMain) {
-          if (debug.mainLogged) return
-          console.log('cant send update to main', debug.mainSent)
-          debug.mainLogged = true
         } else {
-          if (debug.logicLogged) return
-          console.log('cant send update to logic', debug.logicSent)
-          debug.logicLogged = true
         }
         return;
       }
-      if (isMain) {
-        if (!debug.mainLogged2) {
-          console.log('sending to main')
-          debug.mainLogged2 = true
-        }
-        debug.mainSent = true
-      } else {
-        if (!debug.logicLogged2) {
-          console.log('sending to logic')
-          debug.logicLogged2 = true
-        }
-        debug.logicSent = true
-      }
-      console.log(`sending to:`, isMain)
       syncData(positions, angles);
       const rawMessage: any = {
         type: WorkerOwnerMessageType.PHYSICS_STEP,
@@ -131,6 +119,7 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
     logicBuffers,
     worker,
     logicWorker,
+    buffersRef,
   } = useAppContext();
 
   const sendPhysicsUpdate = useSendPhysicsUpdate(tickRef);
@@ -142,13 +131,20 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
       positions: Float32Array,
       angles: Float32Array
     ) => {
-
-      console.log('step processed')
-
       const buffers = isMain ? mainBuffers : logicBuffers;
 
-      buffers.positions = positions;
-      buffers.angles = angles;
+      if (isMain) {
+        if (lastProcessedPhysicsTick >= buffersRef.current.mainCount) {
+          buffers.positions = positions;
+          buffers.angles = angles;
+        }
+      } else {
+        if (lastProcessedPhysicsTick >= buffersRef.current.logicCount) {
+          buffers.positions = positions;
+          buffers.angles = angles;
+        }
+      }
+
       if (lastProcessedPhysicsTick < tickRef.current) {
         if (isMain) {
           sendPhysicsUpdate(worker, buffers, true);

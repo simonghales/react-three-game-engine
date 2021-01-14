@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, MutableRefObject, useContext } from 'react';
 import { World } from 'planck-js';
 import { Subscribe } from '../../hooks/useWorkerMessages';
 import { Buffers } from '../shared/types';
@@ -12,6 +12,11 @@ export type AppContextState = {
   logicSubscribe: Subscribe;
   buffers: Buffers;
   logicBuffers: Buffers;
+  buffersRef: MutableRefObject<{
+    mainCount: number;
+    logicCount: number;
+  }>;
+  maxNumberOfDynamicObjects: number;
 };
 
 export const AppContext = createContext((null as unknown) as AppContextState);
