@@ -23,11 +23,12 @@ export const usePhysicsWorker = () => {
   return useContext(Context).worker;
 };
 
-const PhysicsWorker: FC<PhysicsProps> = ({ children, config, worldParams }) => {
-  // @ts-ignore
-  const [worker] = useState<Worker>(
-    () => new Worker('./worker/index.js', { type: 'module' })
-  );
+const PhysicsWorker: FC<PhysicsProps & {
+  physicsWorker: Worker,
+}> = ({ children, physicsWorker, config, worldParams }) => {
+
+  const worker = physicsWorker
+
   const [initiated, setInitiated] = useState(false)
 
   useEffect(() => {

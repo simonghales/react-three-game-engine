@@ -20,6 +20,7 @@ import {
   InstancedMesh,
   InstancesProvider,
 } from "./main/InstancesProvider"
+import { physicsWorkerHandler } from './main/worker/physicsWorkerHelper';
 
 export {
   Engine,
@@ -47,4 +48,5 @@ export {
   Instance,
   InstancedMesh,
   InstancesProvider,
+  physicsWorkerHandler,
 };

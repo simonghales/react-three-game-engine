@@ -8,10 +8,12 @@ import {PhysicsProps} from "./worker/shared/types";
 import {LogicWorker} from "./LogicWorker";
 
 export const Engine: FC<PhysicsProps & {
+  physicsWorker: Worker,
   logicWorker?: Worker;
   logicMappedComponents?: MappedComponents;
 }> = ({
   children,
+  physicsWorker,
   config,
   worldParams,
   logicWorker,
@@ -20,7 +22,7 @@ export const Engine: FC<PhysicsProps & {
   if (logicWorker) {
     return (
       <MeshRefs>
-        <PhysicsWorker config={config} worldParams={worldParams}>
+        <PhysicsWorker physicsWorker={physicsWorker} config={config} worldParams={worldParams}>
           <CollisionsProvider>
             <R3FPhysicsObjectUpdater>
               <LogicWorker
@@ -38,7 +40,7 @@ export const Engine: FC<PhysicsProps & {
 
   return (
     <MeshRefs>
-      <PhysicsWorker config={config} worldParams={worldParams}>
+      <PhysicsWorker physicsWorker={physicsWorker} config={config} worldParams={worldParams}>
         <CollisionsProvider>
           <R3FPhysicsObjectUpdater>
               {children}
