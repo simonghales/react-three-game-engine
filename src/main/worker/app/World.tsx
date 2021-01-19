@@ -34,6 +34,11 @@ const debug = {
   logicLogged2: false,
 };
 
+const localState = {
+  primaryBufferAvailable: true,
+  primaryLogicBufferAvailable: true,
+}
+
 const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
 
   const localStateRef = useRef({
@@ -49,7 +54,9 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
 
   const {
     buffers: mainBuffers,
+    buffersSecondary,
     logicBuffers,
+    logicBuffersSecondary,
     worker,
     logicWorker,
     maxNumberOfDynamicObjects,
@@ -58,7 +65,7 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
   const syncData = useSyncData();
 
   return useCallback(
-    (target: Worker | MessagePort, buffer: Buffers, isMain: boolean) => {
+    (target: Worker | MessagePort, buffer: Buffers, isMain: boolean, primaryBuffer: boolean) => {
       const { positions, angles } = buffer;
       if (!(positions.byteLength !== 0 && angles.byteLength !== 0)) {
         console.warn('cant send physics update to', isMain ? 'main' : 'logic')
@@ -84,13 +91,20 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
       }
       if (isMain) {
         localStateRef.current.failedMainCount = 0
+        if (primaryBuffer) {
+          localState.primaryBufferAvailable = false
+        }
       } else {
         localStateRef.current.failedLogicCount = 0
+        if (primaryBuffer) {
+          localState.primaryLogicBufferAvailable = false
+        }
       }
       syncData(positions, angles);
       const rawMessage: any = {
         type: WorkerOwnerMessageType.PHYSICS_STEP,
         physicsTick: tickRef.current,
+        primaryBuffer,
       };
       if (isMain) {
         rawMessage.bodies = Array.from(dynamicBodies);
@@ -113,7 +127,9 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
 const useSendPhysicsUpdates = (tickRef: MutableRefObject<number>) => {
   const {
     buffers: mainBuffers,
+    buffersSecondary,
     logicBuffers,
+    logicBuffersSecondary,
     worker,
     logicWorker,
   } = useAppContext();
@@ -121,10 +137,11 @@ const useSendPhysicsUpdates = (tickRef: MutableRefObject<number>) => {
   const sendPhysicsUpdate = useSendPhysicsUpdate(tickRef);
 
   const update = useCallback(() => {
-    sendPhysicsUpdate(worker, mainBuffers, true);
+
+    sendPhysicsUpdate(worker, localState.primaryBufferAvailable ? mainBuffers : buffersSecondary, true, localState.primaryBufferAvailable);
 
     if (logicWorker) {
-      sendPhysicsUpdate(logicWorker, logicBuffers, false);
+      sendPhysicsUpdate(logicWorker, localState.primaryLogicBufferAvailable ? logicBuffers : logicBuffersSecondary, false, localState.primaryLogicBufferAvailable);
     }
   }, [worker, logicWorker, sendPhysicsUpdate, mainBuffers, logicBuffers]);
 
@@ -143,7 +160,9 @@ const useSendPhysicsUpdates = (tickRef: MutableRefObject<number>) => {
 const useStepProcessed = (tickRef: MutableRefObject<number>) => {
   const {
     buffers: mainBuffers,
+    buffersSecondary,
     logicBuffers,
+    logicBuffersSecondary,
     worker,
     logicWorker,
     buffersRef,
@@ -156,27 +175,34 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
       isMain: boolean,
       lastProcessedPhysicsTick: number,
       positions: Float32Array,
-      angles: Float32Array
+      angles: Float32Array,
+      primaryBuffer: boolean,
     ) => {
-      const buffers = isMain ? mainBuffers : logicBuffers;
+      const buffers = isMain ? primaryBuffer ? mainBuffers : buffersSecondary : primaryBuffer ? logicBuffers : logicBuffersSecondary;
 
       if (isMain) {
         if (lastProcessedPhysicsTick >= buffersRef.current.mainCount) {
           buffers.positions = positions;
           buffers.angles = angles;
         }
+        if (primaryBuffer) {
+          localState.primaryBufferAvailable = true
+        }
       } else {
         if (lastProcessedPhysicsTick >= buffersRef.current.logicCount) {
           buffers.positions = positions;
           buffers.angles = angles;
         }
+        if (primaryBuffer) {
+          localState.primaryLogicBufferAvailable = true
+        }
       }
 
       if (lastProcessedPhysicsTick < tickRef.current) {
         if (isMain) {
-          sendPhysicsUpdate(worker, buffers, true);
+          sendPhysicsUpdate(worker, buffers, true, primaryBuffer);
         } else if (logicWorker) {
-          sendPhysicsUpdate(logicWorker, buffers, false);
+          sendPhysicsUpdate(logicWorker, buffers, false, primaryBuffer);
         }
       }
     },
@@ -220,7 +246,8 @@ const useWorldLoop = () => {
           isMain,
           event.data.physicsTick,
           event.data.positions,
-          event.data.angles
+          event.data.angles,
+          event.data.primaryBuffer,
         );
       }
     };

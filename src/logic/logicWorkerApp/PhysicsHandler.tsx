@@ -18,7 +18,7 @@ const PhysicsHandler: React.FC<{
       <WorkerOnMessageProvider subscribe={subscribe}>
         <StoredPhysicsData>
           <MeshSubscriptions>
-            <PhysicsSync worker={worker} noLerping>
+            <PhysicsSync worker={worker} physicsUpdateRate={0} noLerping>
               {children}
             </PhysicsSync>
           </MeshSubscriptions>

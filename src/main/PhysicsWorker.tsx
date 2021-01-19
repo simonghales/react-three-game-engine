@@ -62,6 +62,9 @@ const PhysicsWorker: FC<PhysicsProps & {
 
   if (!initiated) return null
 
+  const updateRate = config && config.updateRate ? config.updateRate : 1000 / 30
+
+
   return (
     <Context.Provider
       value={{
@@ -72,7 +75,7 @@ const PhysicsWorker: FC<PhysicsProps & {
         <StoredPhysicsData>
           <MeshSubscriptions>
             <WorkerOnMessageProvider subscribe={subscribe}>
-              <PhysicsSync worker={worker}>{children}</PhysicsSync>
+              <PhysicsSync worker={worker} physicsUpdateRate={updateRate}>{children}</PhysicsSync>
             </WorkerOnMessageProvider>
           </MeshSubscriptions>
         </StoredPhysicsData>

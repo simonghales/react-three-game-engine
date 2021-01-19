@@ -11,7 +11,9 @@ export type AppContextState = {
   subscribe: Subscribe;
   logicSubscribe: Subscribe;
   buffers: Buffers;
+  buffersSecondary: Buffers;
   logicBuffers: Buffers;
+  logicBuffersSecondary: Buffers;
   buffersRef: MutableRefObject<{
     mainCount: number;
     logicCount: number;

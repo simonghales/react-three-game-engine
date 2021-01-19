@@ -120,11 +120,11 @@ const MeshSubscriptions: React.FC = ({ children }) => {
                 object.rotation.x = update.angle;
               }
             } else if (target) {
-              object.position.x = target.position[0];
-              object.position.y = target.position[1];
-              if (applyAngle) {
-                object.rotation.x = target.angle;
-              }
+              // object.position.x = target.position[0];
+              // object.position.y = target.position[1];
+              // if (applyAngle) {
+              //   object.rotation.x = target.angle;
+              // }
             }
             subscriptionsRef.current[uuid].target = {
               position: update.position,

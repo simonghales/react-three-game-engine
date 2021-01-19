@@ -39,9 +39,10 @@ export const useFixedUpdate = (callback: (delta: number) => void) => {
 };
 
 const PhysicsSync: FC<{
+  physicsUpdateRate: number,
   worker: Worker | MessagePort;
   noLerping?: boolean;
-}> = ({ children, worker, noLerping = false }) => {
+}> = ({ children, physicsUpdateRate, worker, noLerping = false }) => {
   const lastUpdateRef = useRef(Date.now());
   const countRef = useRef(0);
   const callbacksRef = useRef<{
@@ -52,7 +53,7 @@ const PhysicsSync: FC<{
   const getPhysicsStepTimeRemainingRatio = useCallback(
     (previousTime: number) => {
       const nextExpectedUpdate =
-        lastUpdateRef.current + PHYSICS_UPDATE_RATE + 1;
+        lastUpdateRef.current + physicsUpdateRate + 2.5;
       const time = Date.now();
       let ratio = (time - previousTime) / (nextExpectedUpdate - previousTime);
       ratio = ratio > 1 ? 1 : ratio;
@@ -107,10 +108,19 @@ const PhysicsSync: FC<{
       });
     };
 
+    let lastUpdate = Date.now()
+
     const unsubscribe = onMessage((event: MessageEvent) => {
       const type = event.data.type;
 
       if (type === WorkerOwnerMessageType.PHYSICS_STEP) {
+        if (!noLerping) {
+          const diff = Date.now() - lastUpdate
+          if (diff > physicsUpdateRate) {
+            // console.log('exceeds update rate', diff)
+          }
+        }
+        lastUpdate = Date.now()
         debugRefs.current.hasReceived = true;
         if (debugRefs.current.timer) {
           clearInterval(debugRefs.current.timer);
