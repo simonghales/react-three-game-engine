@@ -43,7 +43,8 @@ Within this worker you'll need to import `physicsWorkerHandler` and pass it `sel
 
 Example: 
 
-```tsx
+```js
+// worker.js
 import {physicsWorkerHandler} from "react-three-game-engine";
 
 // because of some weird react/dev/webpack/something quirk
