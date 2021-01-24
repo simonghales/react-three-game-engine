@@ -33,22 +33,49 @@ plus
 
 `npm install three react-three-fiber planck-js`
 
-2. Import and add [`<Engine/>`](docs/api/API.md#Engine) component within your r3f `<Canvas/>` component. 
+2. Create Physics Web Worker
+
+You'll need to create your own web worker to handle the physics. You can
+check out my repo [react-three-game-starter](https://github.com/simonghales/react-three-game-starter)
+for an example of how you can do so with `create-react-app` without having to eject.
+
+Within this worker you'll need to import `physicsWorkerHandler` and pass it `self` as the param.
+
+Example: 
+
+```tsx
+import {physicsWorkerHandler} from "react-three-game-engine";
+
+// because of some weird react/dev/webpack/something quirk
+self.$RefreshReg$ = () => {};
+self.$RefreshSig$ = () => () => {};
+
+physicsWorkerHandler(self);
+```
+
+3. Import and add [`<Engine/>`](docs/api/API.md#Engine) component within your r3f `<Canvas/>` component. 
 
 ```jsx
 import { Engine } from 'react-three-game-engine'
 import { Canvas } from 'react-three-fiber'
 ```
 
+And pass it the physics worker you created in the previous step.
+
 ```jsx
+
+const physicsWorker = new Worker('path/to/worker.js', { type: 'module' });
+    
+//...
+
 <Canvas>
-    <Engine>
+    <Engine physicsWorker={physicsWorker}>
         {/* Game components go here */}
     </Engine>
 </Canvas>
 ```
 
-3. Create a planck.js driven physics [body](docs/api/API.md#Bodies)
+4. Create a planck.js driven physics [body](docs/api/API.md#Bodies)
 
 ```jsx
 import { useBody, BodyType, BodyShape } from 'react-three-game-engine'
@@ -70,13 +97,13 @@ const [ref, api] = useBody(() => ({
 }))
 ```
 
-4. Control the body via the returned [api](docs/api/API.md#BodyApi)
+5. Control the body via the returned [api](docs/api/API.md#BodyApi)
 
 ```jsx
 api.setLinearVelocity(Vec2(1, 1))
 ```
 
-5. Utilise [`useFixedUpdate`](docs/api/API.md#usefixedupdate) for controlling the body
+6. Utilise [`useFixedUpdate`](docs/api/API.md#usefixedupdate) for controlling the body
 
 ```jsx
 import { useFixedUpdate } from 'react-three-game-engine'
