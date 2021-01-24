@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
+import React, {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react';
 import { useAppContext, useWorld } from './appContext';
 import {
   Buffers,
@@ -39,6 +39,7 @@ const useSendPhysicsUpdate = (tickRef: MutableRefObject<number>) => {
   const localStateRef = useRef({
     failedMainCount: 0,
     failedLogicCount: 0,
+    lastPhysicsStep: 0,
   })
 
   const {
@@ -120,10 +121,10 @@ const useSendPhysicsUpdates = (tickRef: MutableRefObject<number>) => {
 
   const sendPhysicsUpdate = useSendPhysicsUpdate(tickRef);
 
-  const update = useCallback(() => {
-    sendPhysicsUpdate(worker, mainBuffers, true);
-
-    if (logicWorker) {
+  const update = useCallback((isMain: boolean) => {
+    if (isMain) {
+      sendPhysicsUpdate(worker, mainBuffers, true);
+    } else if (logicWorker) {
       sendPhysicsUpdate(logicWorker, logicBuffers, false);
     }
   }, [worker, logicWorker, sendPhysicsUpdate, mainBuffers, logicBuffers]);
@@ -134,9 +135,9 @@ const useSendPhysicsUpdates = (tickRef: MutableRefObject<number>) => {
     updateRef.current = update;
   }, [update, updateRef]);
 
-  return useCallback(() => {
+  return useCallback((isMain: boolean) => {
     // using ref, as i don't want to interrupt the interval
-    updateRef.current();
+    updateRef.current(isMain);
   }, [updateRef]);
 };
 
@@ -149,8 +150,6 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
     buffersRef,
   } = useAppContext();
 
-  const sendPhysicsUpdate = useSendPhysicsUpdate(tickRef);
-
   return useCallback(
     (
       isMain: boolean,
@@ -161,26 +160,14 @@ const useStepProcessed = (tickRef: MutableRefObject<number>) => {
       const buffers = isMain ? mainBuffers : logicBuffers;
 
       if (isMain) {
-        if (lastProcessedPhysicsTick >= buffersRef.current.mainCount) {
-          buffers.positions = positions;
-          buffers.angles = angles;
-        }
+        buffers.positions = positions;
+        buffers.angles = angles;
       } else {
-        if (lastProcessedPhysicsTick >= buffersRef.current.logicCount) {
-          buffers.positions = positions;
-          buffers.angles = angles;
-        }
-      }
-
-      if (lastProcessedPhysicsTick < tickRef.current) {
-        if (isMain) {
-          sendPhysicsUpdate(worker, buffers, true);
-        } else if (logicWorker) {
-          sendPhysicsUpdate(logicWorker, buffers, false);
-        }
+        buffers.positions = positions;
+        buffers.angles = angles;
       }
     },
-    [mainBuffers, logicBuffers, tickRef, worker, logicWorker, sendPhysicsUpdate]
+    [mainBuffers, logicBuffers, tickRef, worker, logicWorker]
   );
 };
 
@@ -188,18 +175,51 @@ const useWorldLoop = () => {
   const world = useWorld();
   const { updateRate, subscribe, logicSubscribe } = useAppContext();
   const tickRef = useRef(0);
+  const [tickCount, setTickCount] = useState(0)
 
+  const lastSentMainUpdateRef = useRef(-1)
+  const lastSentLogicUpdateRef = useRef(-1)
+  const [mainBufferReady, setMainBufferReady] = useState(false)
+  const [logicBufferReady, setLogicBufferReady] = useState(false)
   const sendPhysicsUpdate = useSendPhysicsUpdates(tickRef);
 
   useEffect(() => {
+
+    if (mainBufferReady && lastSentMainUpdateRef.current < tickCount) {
+      sendPhysicsUpdate(true)
+      lastSentMainUpdateRef.current = tickCount
+      setMainBufferReady(false)
+    }
+
+  }, [tickCount, mainBufferReady])
+
+  useEffect(() => {
+
+    if (logicBufferReady && lastSentLogicUpdateRef.current < tickCount) {
+      sendPhysicsUpdate(false)
+      lastSentLogicUpdateRef.current = tickCount
+      setLogicBufferReady(false)
+    }
+
+  }, [tickCount, logicBufferReady])
+
+  useEffect(() => {
+
+    let firstStep = true
+
     const step = () => {
       world.step(updateRate);
+      if (firstStep) {
+        firstStep = false
+        setMainBufferReady(true)
+        setLogicBufferReady(true)
+      }
     };
 
     const interval = setInterval(() => {
       tickRef.current += 1;
+      setTickCount(state => state + 1)
       step();
-      sendPhysicsUpdate();
     }, updateRate);
 
     return () => {
@@ -222,6 +242,11 @@ const useWorldLoop = () => {
           event.data.positions,
           event.data.angles
         );
+      }
+      if (isMain) {
+        setMainBufferReady(true)
+      } else {
+        setLogicBufferReady(true)
       }
     };
 
