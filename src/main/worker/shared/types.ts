@@ -9,6 +9,7 @@ export enum WorkerMessageType {
   SET_BODY,
   UPDATE_BODY,
   PHYSICS_STEP_PROCESSED,
+  READY_FOR_PHYSICS,
 }
 
 export enum WorkerOwnerMessageType {

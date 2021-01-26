@@ -91,7 +91,7 @@ const PhysicsSync: FC<{
 
   useEffect(() => {
     debugRefs.current.timer = setTimeout(() => {
-      console.warn('over 1 second since last physics step...');
+      console.warn('no initial physics data received...');
     }, 1000);
 
     const onPhysicsStep = () => {
@@ -143,6 +143,12 @@ const PhysicsSync: FC<{
         onPhysicsStep();
       }
     });
+
+    worker.postMessage(
+        {
+          type: WorkerMessageType.READY_FOR_PHYSICS,
+        }
+    )
 
     return () => {
       unsubscribe();

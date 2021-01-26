@@ -1,11 +1,7 @@
 import React, {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react';
-import { useAppContext, useWorld } from './appContext';
-import {
-  Buffers,
-  WorkerMessageType,
-  WorkerOwnerMessageType,
-} from '../shared/types';
-import { useWorldState } from './WorldState';
+import {useAppContext, useWorld} from './appContext';
+import {Buffers, WorkerMessageType, WorkerOwnerMessageType,} from '../shared/types';
+import {useWorldState} from './WorldState';
 import {generateBuffers} from "./buffers";
 
 const useSyncData = () => {
@@ -205,15 +201,8 @@ const useWorldLoop = () => {
 
   useEffect(() => {
 
-    let firstStep = true
-
     const step = () => {
       world.step(updateRate);
-      if (firstStep) {
-        firstStep = false
-        setMainBufferReady(true)
-        setLogicBufferReady(true)
-      }
     };
 
     const interval = setInterval(() => {
@@ -230,23 +219,30 @@ const useWorldLoop = () => {
   const stepProcessed = useStepProcessed(tickRef);
 
   useEffect(() => {
+
     const onMessage = (event: MessageEvent, isMain: boolean = true) => {
       const { type, props = {} } = event.data as {
         type: WorkerMessageType;
         props: any;
       };
-      if (type === WorkerMessageType.PHYSICS_STEP_PROCESSED) {
+      if (type === WorkerMessageType.READY_FOR_PHYSICS) {
+        if (isMain) {
+          setMainBufferReady(true)
+        } else {
+          setLogicBufferReady(true)
+        }
+      } else if (type === WorkerMessageType.PHYSICS_STEP_PROCESSED) {
         stepProcessed(
           isMain,
           event.data.physicsTick,
           event.data.positions,
           event.data.angles
         );
-      }
-      if (isMain) {
-        setMainBufferReady(true)
-      } else {
-        setLogicBufferReady(true)
+        if (isMain) {
+          setMainBufferReady(true)
+        } else {
+          setLogicBufferReady(true)
+        }
       }
     };
 
