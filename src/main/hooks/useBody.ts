@@ -116,8 +116,10 @@ export const useBody = (
 
     const object = ref.current;
 
-    object.position.x = props.position?.x || 0;
-    object.position.y = props.position?.y || 0;
+    if (object) {
+      object.position.x = props.position?.x || 0;
+      object.position.y = props.position?.y || 0;
+    }
 
     workerAddBody({
       uuid,
