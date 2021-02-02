@@ -3,7 +3,6 @@
 # react-three-game-engine
 
 [![Version](https://img.shields.io/npm/v/react-three-game-engine?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-three-game-engine)
-[![Downloads](https://img.shields.io/npm/dt/react-three-game-engine.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-three-game-engine)
 
 A very early experimental work-in-progress package to help provide game engine functionality for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
