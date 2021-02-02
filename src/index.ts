@@ -21,9 +21,11 @@ import {
   InstancesProvider,
 } from "./main/InstancesProvider"
 import { physicsWorkerHandler } from './main/worker/physicsWorkerHelper';
+import { useCollisionEvents } from './main/hooks/useCollisionEvents';
 
 export {
   Engine,
+  useCollisionEvents,
   useBodyApi,
   useBody,
   BodyApi,

@@ -1,6 +1,7 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
-import { ValidUUID } from '../main/worker/shared/types';
+import React, {createContext, useCallback, useContext, useEffect, useState} from 'react';
+import {ValidUUID, WorkerOwnerMessageType} from '../main/worker/shared/types';
 import { CollisionEventProps } from '../main/worker/planckjs/data';
+import {useWorkerOnMessage} from "./WorkerOnMessageProvider";
 
 type CollisionsProviderContextState = {
   addCollisionHandler: (
@@ -81,6 +82,29 @@ const CollisionsProvider: React.FC = ({ children }) => {
     },
     [collisionEndedEvents]
   );
+
+  const onMessage = useWorkerOnMessage();
+
+  useEffect(() => {
+
+      const unsubscribe = onMessage((event: MessageEvent) => {
+          const type = event.data.type;
+
+          switch (type) {
+              case WorkerOwnerMessageType.BEGIN_COLLISION:
+                handleBeginCollision(event.data.props as any)
+                break;
+              case WorkerOwnerMessageType.END_COLLISION:
+                handleEndCollision(event.data.props as any)
+                break;
+              default:
+          }
+
+      })
+
+      return unsubscribe
+
+  }, [])
 
   return (
     <CollisionsProviderContext.Provider
