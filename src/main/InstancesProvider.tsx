@@ -1,6 +1,6 @@
 import React, {createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {InstancedMesh as TInstancedMesh, Matrix4, Mesh, Object3D} from "three";
-import {useGLTF} from "@react-three/drei/useGLTF";
+import {useGLTF} from "@react-three/drei/core/useGLTF";
 import {useDidMount} from "../utils/hooks";
 
 type InstanceData = {
