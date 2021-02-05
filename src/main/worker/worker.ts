@@ -2,6 +2,7 @@
 import { render } from 'react-nil';
 import { PhysicsProps, WorkerMessageType } from './shared/types';
 import { createElement } from 'react';
+import {PHYSICS_UPDATE_RATE} from "./planckjs/config";
 
 // because of some weird react/dev/webpack/something quirk
 (self as any).$RefreshReg$ = () => {};
@@ -19,7 +20,7 @@ selfWorker.onmessage = (event: MessageEvent) => {
       const { worldParams = {}, config = {} } = props as PhysicsProps;
       const {
         maxNumberOfDynamicObjects = 100,
-        updateRate = 1000 / 30,
+        updateRate = PHYSICS_UPDATE_RATE,
       } = config;
       render(
         createElement(

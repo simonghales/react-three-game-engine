@@ -1,6 +1,7 @@
 import {createElement, FC} from "react";
 import {PhysicsProps, WorkerMessageType} from "./shared/types";
 import {render} from "react-nil";
+import {PHYSICS_UPDATE_RATE} from "./planckjs/config";
 
 export const physicsWorkerHandler = (selfWorker: Worker) => {
 
@@ -14,7 +15,7 @@ export const physicsWorkerHandler = (selfWorker: Worker) => {
                 const { worldParams = {}, config = {} } = props as PhysicsProps;
                 const {
                     maxNumberOfDynamicObjects = 100,
-                    updateRate = 1000 / 30,
+                    updateRate = PHYSICS_UPDATE_RATE,
                 } = config;
                 render(
                     createElement(

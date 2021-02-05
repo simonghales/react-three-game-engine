@@ -11,6 +11,8 @@ import { ValidUUID } from '../main/worker/shared/types';
 import { getPositionAndAngle } from './utils';
 import { useStoredData } from './StoredPhysicsData';
 import { lerp } from '../utils/numbers';
+import {getNow} from "../utils/time";
+import {PHYSICS_UPDATE_RATE} from "../main/worker/planckjs/config";
 
 export type ContextState = {
   lerpMeshes: (
@@ -61,43 +63,85 @@ export const useUpdateMeshes = () => {
   return useContext(Context).updateMeshes;
 };
 
-const MeshSubscriptions: React.FC = ({ children }) => {
-  const subscriptionsRef = useRef<{
+type Subscriptions = {
     [uuid: string]: {
-      uuid: ValidUUID;
-      object: Object3D;
-      applyAngle: boolean;
-      lastUpdate?: number;
-      target?: {
-        position: [number, number];
-        angle: number;
-      };
-    };
-  }>({});
+        uuid: ValidUUID,
+        object: Object3D,
+        applyAngle: boolean,
+        lastUpdate?: number,
+        lastRender?: number,
+        previous?: {
+            position: [number, number],
+            angle: number,
+        },
+        target?: {
+            position: [number, number],
+            angle: number,
+        },
+    }
+}
+
+const MeshSubscriptions: React.FC = ({ children }) => {
+  const subscriptionsRef = useRef<Subscriptions>({});
 
   const lerpMeshes = useCallback(
     (getPhysicsStepTimeRemainingRatio: (time: number) => number) => {
       Object.values(subscriptionsRef.current).forEach(
-        ({ uuid, object, target, applyAngle, lastUpdate }) => {
-          if (!target) return;
+        ({ uuid,
+             object,
+             target,
+             previous,
+             applyAngle,
+             lastUpdate , lastRender}) => {
+          if (!target || !previous) {
+              return;
+          }
           const { position, angle } = target;
-          let physicsRemainingRatio = getPhysicsStepTimeRemainingRatio(
-            lastUpdate ?? Date.now()
-          );
+          const {position: previousPosition, angle: previousAngle} = previous
+          lastUpdate = lastUpdate || getNow()
+
+            // lastUpdate = 10
+            // nextUpdate = 20
+            // currentUpdate = 15
+            // min = 10
+            // max = 20
+
+            const nextExpectedUpdate = lastUpdate + PHYSICS_UPDATE_RATE + 2
+
+            const min = lastUpdate
+            const max = nextExpectedUpdate
+            const now = getNow()
+
+            const timeSinceLastRender = now - (lastRender || now)
+
+            const timeUntilNextUpdate = nextExpectedUpdate - now
+
+            // console.log('timeUntilNextUpdate', timeUntilNextUpdate)
+
+            let normalised = ((now - min) / (max - min))
+
+            normalised = normalised < 0 ? 0 : normalised > 1 ? 1 : normalised
+
+          const physicsRemainingRatio = normalised
+
+            // console.log('physicsRemainingRatio', physicsRemainingRatio, timeUntilNextUpdate)
+
           object.position.x = lerp(
-            object.position.x,
+            previousPosition[0],
             position[0],
             physicsRemainingRatio
           );
           object.position.y = lerp(
-            object.position.y,
+            previousPosition[1],
             position[1],
             physicsRemainingRatio
           );
           if (applyAngle) {
             object.rotation.z = angle; // todo - lerp
           }
-          subscriptionsRef.current[uuid as string].lastUpdate = Date.now();
+
+            subscriptionsRef.current[uuid as string].lastRender = getNow()
+
         }
       );
     },
@@ -109,7 +153,7 @@ const MeshSubscriptions: React.FC = ({ children }) => {
   const updateMeshes = useCallback(
     (positions: Float32Array, angles: Float32Array, immediate: boolean) => {
       Object.entries(subscriptionsRef.current).forEach(
-        ([uuid, { object, target, applyAngle }]) => {
+        ([uuid, { object, target, previous, applyAngle }]) => {
           const index = storedData.bodies[uuid];
           const update = getPositionAndAngle({ positions, angles }, index);
           if (update) {
@@ -119,17 +163,24 @@ const MeshSubscriptions: React.FC = ({ children }) => {
               if (applyAngle) {
                 object.rotation.x = update.angle;
               }
-            } else if (target) {
-              object.position.x = target.position[0];
-              object.position.y = target.position[1];
-              if (applyAngle) {
-                object.rotation.x = target.angle;
-              }
+            }
+            const previousTarget = subscriptionsRef.current[uuid].target
+            if (!previousTarget) {
+                subscriptionsRef.current[uuid].previous = {
+                  position: [object.position.x, object.position.y],
+                  angle: object.rotation.x,
+                };
+            } else {
+                subscriptionsRef.current[uuid].previous = {
+                    position: previousTarget.position,
+                    angle: previousTarget.angle,
+                };
             }
             subscriptionsRef.current[uuid].target = {
               position: update.position,
               angle: update.angle,
             };
+            subscriptionsRef.current[uuid as string].lastUpdate = getNow()
           }
         }
       );

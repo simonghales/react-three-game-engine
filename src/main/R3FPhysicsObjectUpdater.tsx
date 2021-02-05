@@ -7,7 +7,7 @@ const R3FPhysicsObjectUpdater: React.FC = ({ children }) => {
   const getPhysicsStepTimeRemainingRatio = useGetPhysicsStepTimeRemainingRatio();
   const lerpMeshes = useLerpMeshes();
 
-  const onFrame = useCallback(() => {
+  const onFrame = useCallback((state: any, delta: number) => {
     lerpMeshes(getPhysicsStepTimeRemainingRatio);
   }, [getPhysicsStepTimeRemainingRatio, lerpMeshes]);
 

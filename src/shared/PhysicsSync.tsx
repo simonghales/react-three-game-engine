@@ -14,6 +14,7 @@ import {
 } from '../main/worker/shared/types';
 import { useStoredData } from './StoredPhysicsData';
 import { useUpdateMeshes } from './MeshSubscriptions';
+import {getNow} from "../utils/time";
 
 type State = {
   onFixedUpdate: (callback: (delta: number) => void) => () => void;
@@ -42,7 +43,7 @@ const PhysicsSync: FC<{
   worker: Worker | MessagePort;
   noLerping?: boolean;
 }> = ({ children, worker, noLerping = false }) => {
-  const lastUpdateRef = useRef(Date.now());
+  const lastUpdateRef = useRef(getNow());
   const countRef = useRef(0);
   const callbacksRef = useRef<{
     [key: string]: (delta: number) => void;
@@ -53,7 +54,7 @@ const PhysicsSync: FC<{
     (previousTime: number) => {
       const nextExpectedUpdate =
         lastUpdateRef.current + PHYSICS_UPDATE_RATE + 1;
-      const time = Date.now();
+      const time = getNow();
       let ratio = (time - previousTime) / (nextExpectedUpdate - previousTime);
       ratio = ratio > 1 ? 1 : ratio;
       ratio = ratio < 0 ? 0 : ratio;
@@ -96,7 +97,7 @@ const PhysicsSync: FC<{
 
     const onPhysicsStep = () => {
       const lastUpdate = lastUpdateRef.current;
-      const now = Date.now();
+      const now = getNow();
       const delta = !lastUpdate ? 1 / 60 : (now - lastUpdate) / 1000;
       lastUpdateRef.current = now;
 
@@ -120,6 +121,7 @@ const PhysicsSync: FC<{
         }, 1000);
         const positions = event.data.positions as Float32Array;
         const angles = event.data.angles as Float32Array;
+        // console.log('update')
         updateMeshes(positions, angles, noLerping);
         worker.postMessage(
           {
