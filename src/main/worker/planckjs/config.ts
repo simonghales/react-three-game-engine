@@ -1,1 +1,1 @@
-export const PHYSICS_UPDATE_RATE = 1000 / 60;
+export const PHYSICS_UPDATE_RATE = 1000 / 30;

@@ -1,3 +1,5 @@
+const start = Date.now()
+
 export const getNow = () => {
-    return performance.timing.navigationStart + performance.now()
+    return start + performance.now()
 }

@@ -45,7 +45,7 @@ Within this worker you'll need to import `physicsWorkerHandler` and pass it `sel
 Example: 
 
 ```js
-// worker.js
+// genericWorker.js
 import {physicsWorkerHandler} from "react-three-game-engine";
 
 // because of some weird react/dev/webpack/something quirk
@@ -66,7 +66,7 @@ And pass it the physics worker you created in the previous step.
 
 ```jsx
 
-const physicsWorker = new Worker('path/to/worker.js', { type: 'module' });
+const physicsWorker = new Worker('path/to/genericWorker.js', { type: 'module' });
     
 //...
 
@@ -170,7 +170,7 @@ logicWorkerHandler(self, require("../path/to/logic/app/component").LgApp)
 3. Import your web worker (this is just example code)
 
 ```jsx
-const [logicWorker] = useState(() => new Worker('../path/to/worker', { type: 'module' }))
+const [logicWorker] = useState(() => new Worker('../path/to/genericWorker', { type: 'module' }))
 ```
 
 4. Pass worker to [`<Engine/>`](docs/api/API.md#Engine)

@@ -10,7 +10,7 @@ Important: must be placed within the `Canvas` element provided by react-three-fi
 <Engine
  config                         // optional - object
  worldParams                    // optional - object  
- logicWorker                    // optional - web worker
+ logicWorker                    // optional - web genericWorker
  logicMappedComponents          // optional - object
  />
 ```

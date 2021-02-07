@@ -124,8 +124,6 @@ const MeshSubscriptions: React.FC = ({ children }) => {
 
           const physicsRemainingRatio = normalised
 
-            // console.log('physicsRemainingRatio', physicsRemainingRatio, timeUntilNextUpdate)
-
           object.position.x = lerp(
             previousPosition[0],
             position[0],
