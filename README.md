@@ -1,4 +1,4 @@
-## ⚠️ This will be replaced by an updated engine that I'm working on within a new repo. https://github.com/simonghales/rgg-engine The external API will be reasonably similar, but the internals are undergoing quite a few changes.
+## ⚠️ This will be replaced by an updated engine that I'm working on within a new repo. https://github.com/simonghales/rgg-engine The external API will be reasonably similar, but the internals are undergoing quite a few changes. I'm also working on an editor, you can check out a preview at https://rgg-demo.netlify.app/
 
 
 ## ⚠️ Currently under development, use at your own risk
