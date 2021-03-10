@@ -1,3 +1,6 @@
+## ⚠️ This will be replaced by an updated engine that I'm working on within a new repo. https://github.com/simonghales/rgg-engine The external API will be reasonably similar, but the internals are undergoing quite a few changes.
+
+
 ## ⚠️ Currently under development, use at your own risk
 
 # react-three-game-engine
