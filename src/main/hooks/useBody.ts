@@ -78,6 +78,7 @@ export const useBodyApi = (passedUuid: ValidUUID): BodyApi => {
 };
 
 export type BodyParams = {
+  syncBody?: boolean,
   listenForCollisions?: boolean;
   applyAngle?: boolean;
   cacheKey?: string;
@@ -95,6 +96,7 @@ export const useBody = (
     uuid: passedUUID,
     fwdRef,
     listenForCollisions = false,
+    syncBody = true,
   } = bodyParams;
   const localRef = useRef<Object3D>((null as unknown) as Object3D);
   const ref = fwdRef ? fwdRef : localRef;
@@ -133,7 +135,7 @@ export const useBody = (
     };
   }, []);
 
-  useSubscribeMesh(uuid, ref.current, applyAngle, isDynamic);
+  useSubscribeMesh(uuid, ref.current, applyAngle, isDynamic && syncBody);
 
   const api = useBodyApi(uuid);
 
