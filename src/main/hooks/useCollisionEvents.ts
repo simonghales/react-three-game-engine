@@ -4,8 +4,8 @@ import {useEffect} from "react";
 
 export const useCollisionEvents = (
     uuid: ValidUUID,
-    onCollideStart?: (data: any, fixtureIndex: number, isSensor: boolean) => void,
-    onCollideEnd?: (data: any, fixtureIndex: number, isSensor: boolean) => void,
+    onCollideStart?: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void,
+    onCollideEnd?: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void,
 ) => {
 
     const {
