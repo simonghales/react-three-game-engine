@@ -7,7 +7,7 @@ type CollisionsProviderContextState = {
   addCollisionHandler: (
     started: boolean,
     uuid: ValidUUID,
-    callback: (data: any, fixtureIndex: number, isSensor: boolean) => void
+    callback: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void
   ) => void;
   removeCollisionHandler: (started: boolean, uuid: ValidUUID) => void;
   handleBeginCollision: (data: CollisionEventProps) => void;
@@ -24,18 +24,18 @@ export const useCollisionsProviderContext = (): CollisionsProviderContextState =
 
 const CollisionsProvider: React.FC = ({ children }) => {
   const [collisionStartedEvents] = useState<{
-    [key: string]: (data: any, fixtureIndex: number, isSensor: boolean) => void;
+    [key: string]: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void;
   }>({});
 
   const [collisionEndedEvents] = useState<{
-    [key: string]: (data: any, fixtureIndex: number, isSensor: boolean) => void;
+    [key: string]: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void;
   }>({});
 
   const addCollisionHandler = useCallback(
     (
       started: boolean,
       uuid: ValidUUID,
-      callback: (data: any, fixtureIndex: number, isSensor: boolean) => void
+      callback: (data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => void
     ) => {
       if (started) {
         collisionStartedEvents[uuid] = callback;
@@ -63,6 +63,7 @@ const CollisionsProvider: React.FC = ({ children }) => {
         collisionStartedEvents[data.uuid](
           data.data,
           data.fixtureIndex,
+          data.collidedFixtureIndex,
           data.isSensor
         );
       }
@@ -76,6 +77,7 @@ const CollisionsProvider: React.FC = ({ children }) => {
         collisionEndedEvents[data.uuid](
           data.data,
           data.fixtureIndex,
+          data.collidedFixtureIndex,
           data.isSensor
         );
       }

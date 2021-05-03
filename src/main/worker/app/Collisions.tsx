@@ -13,13 +13,14 @@ const useHandleBeginCollision = () => {
   const { worker, logicWorker } = useAppContext();
   const { collisionListeners } = useWorldState();
   const sendCollisionBeginEvent = useCallback(
-    (uuid: string, data: any, fixtureIndex: number, isSensor: boolean) => {
+    (uuid: string, data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => {
       const update = {
         type: WorkerOwnerMessageType.BEGIN_COLLISION,
         props: {
           uuid,
           data,
           fixtureIndex,
+        collidedFixtureIndex,
           isSensor,
         },
       };
@@ -43,6 +44,7 @@ const useHandleBeginCollision = () => {
           aUUID,
           bData,
           getFixtureIndex(aData),
+          getFixtureIndex(bData),
           fixtureB.isSensor()
         );
       }
@@ -52,6 +54,7 @@ const useHandleBeginCollision = () => {
           bUUID,
           aData,
           getFixtureIndex(bData),
+          getFixtureIndex(aData),
           fixtureA.isSensor()
         );
       }
@@ -65,13 +68,14 @@ const useHandleEndCollision = () => {
   const { collisionListeners } = useWorldState();
 
   const sendCollisionEndEvent = useCallback(
-    (uuid: string, data: any, fixtureIndex: number, isSensor: boolean) => {
+    (uuid: string, data: any, fixtureIndex: number, collidedFixtureIndex: number, isSensor: boolean) => {
       const update = {
         type: WorkerOwnerMessageType.END_COLLISION,
         props: {
           uuid,
           data,
           fixtureIndex,
+            collidedFixtureIndex,
           isSensor,
         },
       };
@@ -95,6 +99,7 @@ const useHandleEndCollision = () => {
           aUUID,
           bData,
           getFixtureIndex(aData),
+          getFixtureIndex(bData),
           fixtureB.isSensor()
         );
       }
@@ -104,6 +109,7 @@ const useHandleEndCollision = () => {
           bUUID,
           aData,
           getFixtureIndex(bData),
+          getFixtureIndex(aData),
           fixtureA.isSensor()
         );
       }
