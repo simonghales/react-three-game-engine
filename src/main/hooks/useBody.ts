@@ -116,6 +116,10 @@ export const useBody = (
   useLayoutEffect(() => {
     const props = propsFn();
 
+    if (!ref.current) {
+      ref.current = new Object3D()
+    }
+
     const object = ref.current;
 
     if (object) {
@@ -135,7 +139,7 @@ export const useBody = (
     };
   }, []);
 
-  useSubscribeMesh(uuid, ref.current, applyAngle, syncBody && isDynamic);
+  useSubscribeMesh(uuid, ref, applyAngle, syncBody && isDynamic);
 
   const api = useBodyApi(uuid);
 

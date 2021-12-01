@@ -13,13 +13,13 @@ import {useStoredMesh, useStoreMesh } from './main/MeshRefs';
 import { useOnMessage } from './shared/Messages';
 import { useSendMessage } from './shared/SendMessages';
 import { Body, BodySync } from "./main/Body";
-import {
-  useAddInstance,
-  useInstancedMesh,
-  Instance,
-  InstancedMesh,
-  InstancesProvider,
-} from "./main/InstancesProvider"
+// import {
+//   useAddInstance,
+//   useInstancedMesh,
+//   Instance,
+//   InstancedMesh,
+//   InstancesProvider,
+// } from "./main/InstancesProvider"
 import { physicsWorkerHandler } from './main/worker/physicsWorkerHelper';
 import { useCollisionEvents } from './main/hooks/useCollisionEvents';
 
@@ -45,10 +45,10 @@ export {
   createCircleFixture,
   Body,
   BodySync,
-  useAddInstance,
-  useInstancedMesh,
-  Instance,
-  InstancedMesh,
-  InstancesProvider,
+  // useAddInstance,
+  // useInstancedMesh,
+  // Instance,
+  // InstancedMesh,
+  // InstancesProvider,
   physicsWorkerHandler,
 };

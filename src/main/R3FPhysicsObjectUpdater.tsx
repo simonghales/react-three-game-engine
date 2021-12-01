@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useFrame } from 'react-three-fiber';
+import { useFrame } from '@react-three/fiber';
 import { useGetPhysicsStepTimeRemainingRatio } from '../shared/PhysicsSync';
 import { useLerpMeshes } from '../shared/MeshSubscriptions';
 

@@ -27,16 +27,19 @@ export type BoxFixture = FixtureBase & {
     hx: number,
     hy: number,
     center?: [number, number],
+    angle?: number,
 }
 
 export const createBoxFixture = ({
                                      width = 1,
                                      height = 1,
                                      center,
+                                        angle,
                                      fixtureOptions = {}
                                  }: {
     width?: number,
     height?: number,
+    angle?: number,
     center?: [number, number],
     fixtureOptions?: Partial<FixtureOpt>
 }): BoxFixture => {
@@ -46,6 +49,9 @@ export const createBoxFixture = ({
         hy: height,
         fixtureOptions,
     }
+    if (angle) {
+        fixture.angle = angle
+    }
     if (center) {
         fixture.center = center
     }
@@ -54,15 +60,18 @@ export const createBoxFixture = ({
 
 export type CircleFixture = FixtureBase & {
     radius: number,
+    position?: [number, number],
 }
 
-export const createCircleFixture = ({ radius = 1, fixtureOptions = {} }: {
+export const createCircleFixture = ({ radius = 1, position, fixtureOptions = {} }: {
     radius?: number,
+    position?: [number, number],
     fixtureOptions?: Partial<FixtureOpt>
 }): CircleFixture => {
     return {
         shape: BodyShape.circle,
         radius,
+        position,
         fixtureOptions,
     }
 }

@@ -25,7 +25,7 @@ export const BodySync: React.FC<{
 
     const ref = bodyRef ?? localRef
 
-    useSubscribeMesh(uuid, ref.current, applyAngle, isDynamic)
+    useSubscribeMesh(uuid, ref, applyAngle, isDynamic)
 
     const api = useBodyApi(uuid)
 

@@ -203,16 +203,21 @@ const useAddBody = (bodies: BodiesMap, cachedBodies: CachedBodiesMap) => {
 
             switch (shape) {
               case BodyShape.box:
-                const { hx, hy, center } = fixture as BoxFixture;
+                const { hx, hy, center, angle } = fixture as BoxFixture;
                 bodyShape = (Box(
                   (hx as number) / 2,
                   (hy as number) / 2,
-                  center ? Vec2(center[0], center[1]) : undefined
+                  center ? Vec2(center[0], center[1]) : undefined,
+                    angle,
                 ) as unknown) as Shape;
                 break;
               case BodyShape.circle:
-                const { radius } = fixture as CircleFixture;
-                bodyShape = (Circle(radius as number) as unknown) as Shape;
+                const { radius, position } = fixture as CircleFixture;
+                if (position) {
+                  bodyShape = (Circle(Vec2(position[0], position[1]), radius as number) as unknown) as Shape;
+                } else {
+                  bodyShape = (Circle(radius as number) as unknown) as Shape;
+                }
                 break;
               default:
                 throw new Error(`Unhandled body shape ${shape}`);
